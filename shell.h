@@ -6,7 +6,7 @@
 /*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 16:29:27 by kwrzosek          #+#    #+#             */
-/*   Updated: 2025/10/23 19:28:04 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2025/10/30 16:16:05 by kwrzosek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,12 +44,6 @@ typedef enum e_token_type
 	TOKEN_STRING
 }	t_token_type;
 
-// need to find better way to pass this, but it will have to do for now
-typedef struct s_globals
-{
-	int	token_size;
-}	t_globals;
-
 typedef struct s_token
 {
 	t_token_type	type;
@@ -69,13 +63,11 @@ t_token	*end_of_list(t_token **token);
 //	lexer_utils.c
 void	pick_handler(char *input, int i, t_token *token);
 void	handle_general(char *input, t_token *token);
-void	handle_squotes();
-void	handle_dquotes();
+void	handle_squotes(char *input, t_token *token);
+void	handle_dquotes(char *input, t_token *token);
 void	handle_red_in(char *input, t_token *token);
 void	handle_red_out(char *input, t_token *token);
-void	handle_pipe(char *input, t_token *token);
-
-
+void	handle_pipe(t_token *token);
 
 void	print_token(t_token *token);
 

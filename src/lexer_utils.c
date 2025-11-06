@@ -6,7 +6,7 @@
 /*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 19:18:54 by kwrzosek          #+#    #+#             */
-/*   Updated: 2025/10/23 19:31:05 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2025/11/02 07:45:45 by kwrzosek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,38 +17,23 @@ void	pick_handler(char *input, int i, t_token *token)
 	if (ft_isalpha(input[i]) || ft_isalnum(input[i]))
 		handle_general(input + i, token);
 	else if (input[i] == '<')
-		handle_red_in(input + 1, token);
+		handle_red_in(input + i, token);
 	else if (input[i] == '>')
-		handle_red_out(input + 1, token);
+		handle_red_out(input + i, token);
 	else if (input[i] == '|')
-		handle_pipe(input + 1, token);
-	// else
-	// {
-	// 	token->type = TOKEN_WORD;
-	// 	token->val = ft_substr(input, i, 1);
-	// 	token->length = 1;
-	// }
+		handle_pipe(token);
+	else if (input[i] == '\'')
+		handle_squotes(input + i, token);
+	else if (input[i] == '"')
+		handle_dquotes(input + i, token);
+	else
+	{
+		token->type = TOKEN_WORD;
+		token->val = ft_substr(input, i, 1);
+		token->length = 1;
+	}
 }
 
-
-// void	pick_handler(char *input, int i, t_token *token)
-// {
-// 	if (ft_isalpha(input[i]) == 1)
-// 		handle_general(input, token);
-// 	else if (input[i] == '<')
-// 		handle_red_in(input, token);
-// 	else if (input[i] == '>')
-// 		handle_red_out(input, token);
-// 	else if (input[i] == '|')
-// 		handle_pipe(input, token);
-// 	// else if (input[i] == '\'')
-// 	// 	return (handle_squotes());	// TODO
-// 	// else if (input[i] == '"')
-// 	// 	return (handle_dquotes());	// TODO	
-// 	// else if (input[i] == ' ')
-// 	// 	return (1);
-// 	// return (0);
-// }
 
 void	handle_general(char *input, t_token *token)
 {
@@ -101,26 +86,36 @@ void	handle_red_in(char *input, t_token *token)
 	}
 }
 
-void	handle_pipe(char *input, t_token *token)
+void	handle_pipe(t_token *token)
 {
-	(void)input;
 	token->type = TOKEN_PIPE;
 	token->val = ft_strdup("|");
 	token->length = 1;
 }
 
+void	handle_squotes(char *input, t_token *token)
+{
+	int	i;
 
-// void	handle_squotes(t_token *token)
-// {
+	i = 1;
+	while ((int)input[i] != 39)
+		i++;
+	token->type = TOKEN_STRING;
+	token->val = ft_substr(input, 0, i + 1);
+	token->length = ft_strlen(token->val);
+}
 
+void	handle_dquotes(char *input, t_token *token)
+{
+	int	i;
 
-// 	return (0);
-// }
-
-// void	handle_dquotes()
-// {
-// 	return (0);
-// }
+	i = 1;
+	while ((int)input[i] != 34)
+		i++;
+	token->type = TOKEN_STRING;
+	token->val = ft_substr(input, 0, i + 1);
+	token->length = ft_strlen(token->val);
+}
 
 void	print_token(t_token *token)
 {
