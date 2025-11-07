@@ -6,7 +6,7 @@
 /*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 16:29:27 by kwrzosek          #+#    #+#             */
-/*   Updated: 2025/10/30 16:16:05 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2025/11/07 13:16:38 by kwrzosek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,12 +52,37 @@ typedef struct s_token
 	struct s_token		*next;
 }	t_token;
 
+typedef enum e_node_type
+{
+	NODE_CMD,
+	NODE_PIPE,
+	NODE_REDIR
+}	t_node_type;
+
+typedef enum e_redir
+{
+	REDIR_OUT,
+	REDIR_IN,
+	REDIR_APPEND,
+	REDIR_HEREDOC
+}	t_redir;
+
+typedef struct s_ast
+{
+	t_node_type	node_type;
+	t_redir		redir_type;
+	char		*val;
+	char		*file;		// file name for redir
+	struct s_ast	*left_node;
+	struct s_ast	*right_node;	
+}	t_ast;
 
 /* FUNCTIONS */
 //	lexer.c
 int	return_token(char *input, t_token **list);
 void	emit_token(t_token **list, char *input, int i);
-int	read_input (char *input);
+// int	read_input (char *input);
+t_token	*read_input(char *input);
 t_token	*end_of_list(t_token **token);
 
 //	lexer_utils.c
@@ -69,6 +94,14 @@ void	handle_red_in(char *input, t_token *token);
 void	handle_red_out(char *input, t_token *token);
 void	handle_pipe(t_token *token);
 
+//	parser.c
+void	create_ast(t_token *head);		//	TODO
+t_ast	*create_cmd_node(t_token *head);			//	TODO
+// t_ast	*create_pipe_node();		//	TODO
+// t_ast	*create_redir_node();		//	TODO
+// void	free_ast();						//	TODO
+
+// printers.c
 void	print_token(t_token *token);
 
 #endif

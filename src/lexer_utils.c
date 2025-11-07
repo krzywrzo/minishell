@@ -6,7 +6,7 @@
 /*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 19:18:54 by kwrzosek          #+#    #+#             */
-/*   Updated: 2025/11/02 07:45:45 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2025/11/07 12:05:05 by kwrzosek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,32 +116,3 @@ void	handle_dquotes(char *input, t_token *token)
 	token->val = ft_substr(input, 0, i + 1);
 	token->length = ft_strlen(token->val);
 }
-
-void	print_token(t_token *token)
-{
-	int	i;
-
-	i = 0;
-	while (token)
-	{
-		if (token->type == 0)
-			printf("#%d [WORD] %s\n", i, token->val);
-		else if (token->type == 1)
-			printf("#%d [PIPE] %s\n", i, token->val);
-		else if (token->type == 2)
-			printf("#%d [RED_IN] %s\n", i, token->val);
-		else if (token->type == 3)
-			printf("#%d [RED_OUT] %s\n", i, token->val);
-		else if (token->type == 4)
-			printf("#%d [APPEND] %s\n", i, token->val);
-		else if (token->type == 5)
-			printf("#%d [HEREDOC] %s\n", i, token->val);
-		else if (token->type == 6)
-			printf("#%d [STRING] %s\n", i, token->val);
-		else
-			printf("[INVALID TYPE]\n");
-		token = token->next;
-		i++;
-	}
-}
-

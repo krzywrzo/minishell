@@ -6,7 +6,7 @@
 /*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 17:50:55 by kwrzosek          #+#    #+#             */
-/*   Updated: 2025/11/01 11:33:30 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2025/11/06 21:25:08 by kwrzosek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	emit_token(t_token **list, char *input, int i)
 	last->next = new_token;
 }
 
-int	read_input(char *input)
+t_token	*read_input(char *input)
 {
 	t_token		*head;
 	t_token		**list;
@@ -45,7 +45,7 @@ int	read_input(char *input)
 	list = &head;
 	i = 0;
 	if (!input)
-		return (-1);
+		return (NULL);
 	while (input[i])
 	{
 		while (input[i] == ' ')
@@ -56,8 +56,8 @@ int	read_input(char *input)
 		while (input[i] == ' ')
 			i++;
 	}
-	print_token(*list);
-	return (0);
+	// print_token(*list);
+	return (head);
 }
 
 t_token	*end_of_list(t_token **token)

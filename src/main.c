@@ -6,7 +6,7 @@
 /*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 22:26:55 by kwrzosek          #+#    #+#             */
-/*   Updated: 2025/11/02 07:38:05 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2025/11/07 13:18:32 by kwrzosek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,16 @@
 int	main(void)
 {
 	char		*input;
-
+	t_token		*head;
 	while (1)
 	{
 		input = readline("$minishell ");
-		if (read_input(input) == -1)
+		head = read_input(input);			// lexing part
+		if (!head)
 			return (-1);
+		create_ast(head);
+		// print_token(head);
 	}
+
 	return (0);
 }
