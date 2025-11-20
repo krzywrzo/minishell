@@ -6,7 +6,7 @@
 /*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 16:25:44 by kwrzosek          #+#    #+#             */
-/*   Updated: 2025/11/16 18:01:55 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2025/11/19 19:28:44 by kwrzosek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,23 +109,36 @@ char	**list_to_argv(t_strlist *list)
 		tmp = tmp->next;
 	}
 	argv[i] = NULL;
+	free_strlist(tmp);
 	return (argv);
 }
 
-
-t_ast	*create_cmd_node(char **argv)
+t_strlist *convert_char_array_to_list(char **array)
 {
-	t_ast	*node;
-
-	node = malloc(sizeof(t_ast));
-	if (!node)
-		return (NULL);
-	node->node_type = NODE_CMD;
-	node->argv = *argv;
-	node->file = NULL;
-	node->redir_type = -1;
-	node->left_node = NULL;
-	node->right_node = NULL;
-	return (node);
+    t_strlist *head = NULL;
+    int i = 0;
+    while (array[i])
+    {
+        list_append(&head, ft_strdup(array[i]));
+        i++;
+    }
+    return (head);
 }
+t_ast   *create_cmd_node(char **argv)
+{
+    t_ast       *node;
+    t_strlist   *arg_list;
 
+    node = malloc(sizeof(t_ast));
+    if (!node)
+        return (NULL);
+    arg_list = convert_char_array_to_list(argv);
+    node->node_type = NODE_CMD;
+    node->argv = arg_list;
+    node->file = NULL;
+    node->redir_type = -1;
+    node->left_node = NULL;
+    node->right_node = NULL;
+    
+    return (node);
+}

@@ -6,7 +6,7 @@
 /*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 16:29:27 by kwrzosek          #+#    #+#             */
-/*   Updated: 2025/11/16 17:52:39 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2025/11/19 16:49:49 by kwrzosek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,8 @@ typedef struct s_ast
 {
 	t_node_type	node_type;
 	t_redir		redir_type;
-	char		*argv;
+	// char		*argv;
+	struct s_strlist	*argv;
 	char		*val;
 	char		*file;		// file name for redir
 	struct s_ast	*left_node;
@@ -115,6 +116,10 @@ static t_ast	*wrap_redir(t_ast *cmd, t_token *token);
 void	list_append(t_strlist **list, char *s);
 t_ast	*parse_token(t_token *tokens);
 
+t_ast *merge_ast_nodes(t_ast *root_node, t_ast *args_node);
+t_ast *find_base_command(t_ast *node);
+void append_all_strings(t_strlist **destination_list, t_strlist *source_list);
+t_strlist *find_list_tail(t_strlist *list);
 
 // printers.c
 void	print_token(t_token *token);
