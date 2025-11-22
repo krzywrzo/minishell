@@ -6,7 +6,7 @@
 /*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 12:04:33 by kwrzosek          #+#    #+#             */
-/*   Updated: 2025/11/19 18:48:52 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2025/11/22 17:41:32 by kwrzosek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,19 @@ void    print_ast(t_ast *node, int depth)
     else if (node->node_type == NODE_PIPE)
         printf("PIPE\n");
     else if (node->node_type == NODE_REDIR)
-        printf("REDIR %s\n", node->file);
+	{
+		char *redir;
+		if (node->redir_type == 0)
+			redir = "REDIR_OUT";
+		else if (node->redir_type == 1)
+			redir = "REDIR_IN";
+		else if (node->redir_type == 2)
+			redir = "REDIR_APPEND";
+		else
+			redir = "REDIR_HEREDOC";
+		printf("%s %s\n", redir, node->file);
+	}
+       
     print_ast(node->left_node, depth + 1);
     print_ast(node->right_node, depth + 1);
 }
