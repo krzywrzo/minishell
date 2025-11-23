@@ -6,7 +6,7 @@
 /*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 16:29:27 by kwrzosek          #+#    #+#             */
-/*   Updated: 2025/11/19 16:49:49 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2025/11/23 21:50:51 by kwrzosek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,6 @@ typedef struct s_ast
 {
 	t_node_type	node_type;
 	t_redir		redir_type;
-	// char		*argv;
 	struct s_strlist	*argv;
 	char		*val;
 	char		*file;		// file name for redir
@@ -96,6 +95,7 @@ void	handle_red_in(char *input, t_token *token);
 void	handle_pipe(t_token *token);
 void	handle_squotes(char *input, t_token *token);
 void	handle_dquotes(char *input, t_token *token);
+int		ft_issign(char str);
 
 // lexer.c
 void	emit_token(t_token **list, char *input, int i);

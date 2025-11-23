@@ -6,7 +6,7 @@
 /*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 19:18:54 by kwrzosek          #+#    #+#             */
-/*   Updated: 2025/11/07 12:05:05 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2025/11/23 21:53:11 by kwrzosek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	pick_handler(char *input, int i, t_token *token)
 {
-	if (ft_isalpha(input[i]) || ft_isalnum(input[i]))
+	if (ft_issign(input[i]))
 		handle_general(input + i, token);
 	else if (input[i] == '<')
 		handle_red_in(input + i, token);
@@ -115,4 +115,12 @@ void	handle_dquotes(char *input, t_token *token)
 	token->type = TOKEN_STRING;
 	token->val = ft_substr(input, 0, i + 1);
 	token->length = ft_strlen(token->val);
+}
+
+int	ft_issign(char str)
+{
+	if(ft_isalnum(str) || str == '-')
+		return 1;
+	else 
+		return 0;
 }
