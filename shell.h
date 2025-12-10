@@ -6,7 +6,7 @@
 /*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 16:29:27 by kwrzosek          #+#    #+#             */
-/*   Updated: 2025/11/23 21:50:51 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2025/12/10 18:37:27 by kwrzosek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,12 @@ t_ast *merge_ast_nodes(t_ast *root_node, t_ast *args_node);
 t_ast *find_base_command(t_ast *node);
 void append_all_strings(t_strlist **destination_list, t_strlist *source_list);
 t_strlist *find_list_tail(t_strlist *list);
+
+// cleaners.c
+void free_ast_argv(char **argv);
+void	free_token(t_token *token);
+void	free_argv(t_strlist *argv);
+void	free_ast(t_ast *root);
 
 // printers.c
 void	print_token(t_token *token);

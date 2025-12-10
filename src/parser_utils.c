@@ -6,7 +6,7 @@
 /*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 16:25:44 by kwrzosek          #+#    #+#             */
-/*   Updated: 2025/11/19 19:28:44 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2025/12/10 20:16:50 by kwrzosek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,67 +56,62 @@ t_ast	*create_redir_node(t_ast *cmd, t_redir mode, char *file)
 	return(node);
 }
 
-void	free_strlist(t_strlist *list)
+t_ast   *build_cmd_from_list(t_strlist *list)
 {
-	t_strlist	*tmp;
+    char    **argv;
+    t_ast   *node;
 
-	while (list)
-	{
-		tmp = list->next;
-		free(list);
-		list = tmp;
-	}
+    if (!list)
+        return (NULL);
+    argv = list_to_argv(list); 
+    if (!argv)
+		return (NULL);
+    node = create_cmd_node(argv);
+    if (!node)
+    {
+        free_ast_argv(argv); 
+        return (NULL);
+    }
+    return (node);
 }
 
-t_ast	*build_cmd_from_list(t_strlist *list)
+char    **list_to_argv(t_strlist *list)
 {
-	char	**argv;
-	t_ast	*node;
+    t_strlist   *curr;
+    t_strlist   *next_node; 
+    char        **argv;
+    int         count;
+    int         i;
 
-	if (!list)
-		return (NULL);
-	argv = list_to_argv(list);
-	if (!argv)
-		return (NULL);
-	node = create_cmd_node(argv);
-	free_strlist(list);
-	return (node);
+    count = 0;
+    curr = list;
+    while (curr) {
+        count++;
+        curr = curr->next;
+    }
+    argv = malloc(sizeof(char *) * (count + 1));
+    if (!argv) {
+        free_argv(list);
+        return (NULL);
+    }
+    curr = list;
+    i = 0;
+    while (curr)
+    {
+        argv[i++] = curr->str;
+        next_node = curr->next;
+        free(curr);
+        curr = next_node;
+    }
+    argv[i] = NULL;
+    return (argv);
 }
-
-
-char	**list_to_argv(t_strlist *list)
-{
-	t_strlist	*tmp;
-	char		**argv;
-	int			count;
-	int			i;
-
-	count = 0;
-	tmp = list;
-	while (tmp)
-	{
-		count++;
-		tmp = tmp->next;
-	}
-	argv = malloc(sizeof(char *) * (count + 1));
-	if (!argv)
-		return (NULL);
-	tmp = list;
-	i = 0;
-	while (tmp)
-	{
-		argv[i++] = ft_strdup(tmp->str);
-		tmp = tmp->next;
-	}
-	argv[i] = NULL;
-	free_strlist(tmp);
-	return (argv);
-}
-
 t_strlist *convert_char_array_to_list(char **array)
 {
     t_strlist *head = NULL;
-    int i = 0;
+    int i;
+	
+	i = 0;
     while (array[i])
     {
         list_append(&head, ft_strdup(array[i]));

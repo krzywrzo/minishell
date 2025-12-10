@@ -85,7 +85,7 @@ OBJ_DIR		=	obj
 INC_DIR		=	include
 
 
-SRC_FILES = lexer_utils.c lexer.c main.c parser.c parser_utils.c printers.c
+SRC_FILES = lexer_utils.c lexer.c main.c parser.c parser_utils.c cleaners.c printers.c
 SRC			=	$(addprefix $(SRC_DIR)/, $(SRC_FILES))
 OBJ			=	$(addprefix $(OBJ_DIR)/, $(SRC_FILES:.c=.o))
 
