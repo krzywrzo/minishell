@@ -6,11 +6,11 @@
 /*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 19:18:54 by kwrzosek          #+#    #+#             */
-/*   Updated: 2025/11/23 21:53:11 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2025/12/24 01:25:15 by kwrzosek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../shell.h"
+#include "../inc/shell.h"
 
 void	pick_handler(char *input, int i, t_token *token)
 {

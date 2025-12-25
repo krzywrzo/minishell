@@ -73,7 +73,7 @@
 NAME		=	minishell
 
 CC			=	cc
-CFLAGS		= -g
+CFLAGS		= -g 
 # CFLAGS		=	-Wall -Wextra -Werror -g
 
 # Detect OS (Darwin = macOS)
@@ -82,7 +82,7 @@ UNAME_S		:=	$(shell uname -s)
 # Directories
 SRC_DIR		=	src
 OBJ_DIR		=	obj
-INC_DIR		=	include
+INC_DIR		=	inc
 
 
 SRC_FILES = lexer_utils.c lexer.c main.c parser.c parser_utils.c cleaners.c printers.c

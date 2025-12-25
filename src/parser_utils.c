@@ -6,11 +6,11 @@
 /*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 16:25:44 by kwrzosek          #+#    #+#             */
-/*   Updated: 2025/12/10 20:16:50 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2025/12/25 15:41:50 by kwrzosek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../shell.h"
+#include "../inc/shell.h"
 
 t_redir	token_to_mode(t_token *token)
 {
@@ -58,20 +58,13 @@ t_ast	*create_redir_node(t_ast *cmd, t_redir mode, char *file)
 
 t_ast   *build_cmd_from_list(t_strlist *list)
 {
-    char    **argv;
     t_ast   *node;
 
     if (!list)
         return (NULL);
-    argv = list_to_argv(list); 
-    if (!argv)
-		return (NULL);
-    node = create_cmd_node(argv);
+    node = create_cmd_node(list); 
     if (!node)
-    {
-        free_ast_argv(argv); 
         return (NULL);
-    }
     return (node);
 }
 
@@ -91,6 +84,7 @@ char    **list_to_argv(t_strlist *list)
     }
     argv = malloc(sizeof(char *) * (count + 1));
     if (!argv) {
+		// free_strlist(curr);
         free_argv(list);
         return (NULL);
     }
@@ -103,6 +97,7 @@ char    **list_to_argv(t_strlist *list)
         free(curr);
         curr = next_node;
     }
+	// free_strlist(curr);
     argv[i] = NULL;
     return (argv);
 }
@@ -119,21 +114,18 @@ t_strlist *convert_char_array_to_list(char **array)
     }
     return (head);
 }
-t_ast   *create_cmd_node(char **argv)
-{
-    t_ast       *node;
-    t_strlist   *arg_list;
 
-    node = malloc(sizeof(t_ast));
+t_ast *create_cmd_node(t_strlist *list)
+{
+    t_ast *node;
+    
+    node = calloc(1, sizeof(t_ast));
     if (!node)
         return (NULL);
-    arg_list = convert_char_array_to_list(argv);
+        
     node->node_type = NODE_CMD;
-    node->argv = arg_list;
-    node->file = NULL;
-    node->redir_type = -1;
-    node->left_node = NULL;
-    node->right_node = NULL;
+    node->argv = list; // ✅ Correct: Assigning t_strlist* to t_strlist*
+    // node->argv is now the owner of the list memory.
     
     return (node);
 }

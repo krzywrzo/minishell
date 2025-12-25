@@ -6,11 +6,11 @@
 /*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 22:26:55 by kwrzosek          #+#    #+#             */
-/*   Updated: 2025/12/10 20:14:13 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2025/12/25 15:40:48 by kwrzosek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../shell.h"
+#include "../inc/shell.h"
 
 int	main(void)
 {
@@ -30,6 +30,7 @@ int	main(void)
         if (head)
         {
             tree = parse_token(head);
+			print_ast(tree, 0);
             if (tree)
                 free_ast(tree);
             free_token(head);

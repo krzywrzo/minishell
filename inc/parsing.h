@@ -1,23 +1,5 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   shell.h                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/08 16:29:27 by kwrzosek          #+#    #+#             */
-/*   Updated: 2025/12/10 18:37:27 by kwrzosek         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#ifndef SHELL_H
-#define SHELL_H
-
-# include <unistd.h>
-# include <stdio.h>
-# include <readline/readline.h>
-# include <readline/history.h>
-# include "../libft/libft.h"
+#ifndef PARSING_H
+#define PARSING_H
 
 
 /*	STRUCTS	*/
@@ -71,7 +53,11 @@ typedef struct s_ast
 {
 	t_node_type	node_type;
 	t_redir		redir_type;
+
 	struct s_strlist	*argv;
+	// char		**argv;
+
+
 	char		*val;
 	char		*file;		// file name for redir
 	struct s_ast	*left_node;
@@ -109,7 +95,8 @@ t_ast	*create_redir_node(t_ast *cmd, t_redir mode, char *file);
 void	free_strlist(t_strlist *list);
 t_ast	*build_cmd_from_list(t_strlist *list);
 char	**list_to_argv(t_strlist *list);
-t_ast	*create_cmd_node(char **argv);
+
+t_ast *create_cmd_node(t_strlist *list);
 
 // parser.c
 static t_ast	*wrap_redir(t_ast *cmd, t_token *token);
@@ -126,6 +113,7 @@ void free_ast_argv(char **argv);
 void	free_token(t_token *token);
 void	free_argv(t_strlist *argv);
 void	free_ast(t_ast *root);
+t_ast *free_all_on_error(t_ast *root, t_ast *current, t_strlist *argv);
 
 // printers.c
 void	print_token(t_token *token);

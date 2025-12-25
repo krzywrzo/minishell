@@ -6,11 +6,11 @@
 /*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 17:50:55 by kwrzosek          #+#    #+#             */
-/*   Updated: 2025/12/10 20:15:59 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2025/12/24 01:25:05 by kwrzosek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../shell.h"
+#include "../inc/shell.h"
 
 void	emit_token(t_token **list, char *input, int i)
 {

@@ -6,11 +6,11 @@
 /*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/10 15:26:12 by kwrzosek          #+#    #+#             */
-/*   Updated: 2025/12/10 20:17:24 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2025/12/25 15:32:08 by kwrzosek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../shell.h"
+#include "../inc/shell.h"
 
 void    free_token(t_token *token)
 {
@@ -84,4 +84,15 @@ void	free_strlist(t_strlist *list)
 		free(list);
 		list = tmp;
 	}
+}
+
+ t_ast *free_all_on_error(t_ast *root, t_ast *current, t_strlist *argv)
+{
+    if (root)
+        free_ast(root);
+    if (current)
+        free_ast(current);
+    if (argv)
+        free_argv(argv);
+    return (NULL);
 }
