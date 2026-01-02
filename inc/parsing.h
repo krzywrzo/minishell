@@ -81,7 +81,7 @@ void	handle_red_in(char *input, t_token *token);
 void	handle_pipe(t_token *token);
 void	handle_squotes(char *input, t_token *token);
 void	handle_dquotes(char *input, t_token *token);
-int		ft_issign(char str);
+int 	is_separator(char c);
 
 // lexer.c
 void	emit_token(t_token **list, char *input, int i);

@@ -6,34 +6,38 @@
 /*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 19:18:54 by kwrzosek          #+#    #+#             */
-/*   Updated: 2025/12/24 01:25:15 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2026/01/01 22:17:08 by kwrzosek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/shell.h"
 
-void	pick_handler(char *input, int i, t_token *token)
+void    pick_handler(char *input, int i, t_token *token)
 {
-	if (ft_issign(input[i]))
-		handle_general(input + i, token);
-	else if (input[i] == '<')
-		handle_red_in(input + i, token);
-	else if (input[i] == '>')
-		handle_red_out(input + i, token);
-	else if (input[i] == '|')
-		handle_pipe(token);
-	else if (input[i] == '\'')
-		handle_squotes(input + i, token);
-	else if (input[i] == '"')
-		handle_dquotes(input + i, token);
-	else
-	{
-		token->type = TOKEN_WORD;
-		token->val = ft_substr(input, i, 1);
-		token->length = 1;
-	}
+    if (input[i] == ' ' || input[i] == '\t')
+    {
+        handle_general(input + i, token);
+    }
+    else if (input[i] == '<')
+        handle_red_in(input + i, token);
+    else if (input[i] == '>')
+        handle_red_out(input + i, token);
+    else if (input[i] == '|')
+        handle_pipe(token);
+    else if (input[i] == '\'')
+        handle_squotes(input + i, token);
+    else if (input[i] == '"')
+        handle_dquotes(input + i, token);
+    else
+    {
+        int len = 0;
+        while (input[i + len] && !is_separator(input[i + len]))
+            len++;
+        token->type = TOKEN_WORD;
+        token->val = ft_substr(input, i, len);
+        token->length = len;
+    }
 }
-
 
 void	handle_general(char *input, t_token *token)
 {
@@ -117,10 +121,13 @@ void	handle_dquotes(char *input, t_token *token)
 	token->length = ft_strlen(token->val);
 }
 
-int	ft_issign(char str)
+int is_separator(char c)
 {
-	if(ft_isalnum(str) || str == '-')
-		return 1;
-	else 
-		return 0;
+    if (c == ' ' || c == '\t')
+        return (1);
+    if (c == '|' || c == '<' || c == '>')
+        return (1);
+    if (c == '\'' || c == '"')
+        return (1);
+    return (0);
 }
