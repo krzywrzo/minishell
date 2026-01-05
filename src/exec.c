@@ -6,7 +6,7 @@
 /*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/27 17:45:25 by kwrzosek          #+#    #+#             */
-/*   Updated: 2026/01/02 15:28:46 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2026/01/05 15:32:14 by kwrzosek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,16 @@
 
 int	order_66(t_ast *root, t_env *env)
 {
+	if (!root)
+		return (0);
 	if (root->node_type == NODE_PIPE)
 	{
-		if(exec_pipe(root, env) == -1)	// TODO: exec_pipe
+		if(exec_pipe(root, env) == -1)
 			return(handle_error());
 	}
 	else if (root->node_type == NODE_REDIR)
 	{
-		if (exec_redir() == -1)		// TODO: exec_redir
+		if (exec_redir(root, env) == -1)
 			return(handle_error());
 	}
 	else
@@ -58,6 +60,7 @@ int exec_pipe(t_ast *node, t_env *env)
         dup2(fd[1], STDOUT_FILENO);
         close(fd[1]);
         exec_cmd(node->left_node, env, 1); 
+		// order_66(node->left_node, env);
         exit(g_exit_status);
     }
     pid_right = fork();
@@ -74,6 +77,7 @@ int exec_pipe(t_ast *node, t_env *env)
         dup2(fd[0], STDIN_FILENO);
         close(fd[0]);
         exec_cmd(node->right_node, env, 1);
+		// order_66(node->right_node, env);
         exit(g_exit_status);
     }
     close(fd[0]);
@@ -85,84 +89,152 @@ int exec_pipe(t_ast *node, t_env *env)
     return (0);
 }
 
-int	exec_redir()
+int	what_fd(t_ast *node)
 {
-	return (0);
-}
-int	exec_cmd(t_ast *node, t_env *env, int is_piped)
-{
-	char	**env_arr;
-	char	*cmd_path;
-	char	**cmd;
-	int		exit_code;
+	int fd;
 
-	env_arr = convert_list_to_arr(env);
-	if (!env_arr)
-		return(-1);
-	cmd_path = get_path(node->argv->str, env_arr);
-	cmd = list_to_argv(node->argv);
-	if (is_builtin(cmd) == 1)
+	if (node->redir_type == REDIR_IN)
+		fd = open(node->file, O_RDONLY);
+	else if (node->redir_type == REDIR_OUT)
+		fd = open(node->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	else if (node->redir_type == REDIR_APPEND)
+		fd = open(node->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	return (fd);
+}
+
+int	restore_fd(t_ast *node, int original_fd)
+{
+	if (node->redir_type == REDIR_IN)
+        return (dup2(original_fd, STDIN_FILENO));
+    else
+        return(dup2(original_fd, STDOUT_FILENO));
+}
+
+int	exec_redir(t_ast *node, t_env *env)
+{
+	int fd;
+	int	original_fd;
+
+	fd = what_fd(node);
+	if (fd == -1)
 	{
-		if (is_piped == 0 && is_state_changing(cmd[0]) == 1)
-		{
-			identify_builtins(cmd, cmd_path, env_arr);
-			return (0);
-		}
-		else
-		{
-			identify_builtins(cmd, cmd_path, env_arr);
-			return (0);
-		}
+		perror("minishell");
+		g_exit_status = 1;
+		return(-1);
 	}
-	fork_and_run(cmd, cmd_path, env_arr);
+	if (node->redir_type == REDIR_IN)
+        original_fd = dup(STDIN_FILENO);
+    else
+        original_fd = dup(STDOUT_FILENO);
+	if (node->redir_type == REDIR_IN)
+		dup2(fd, STDIN_FILENO);
+	else
+		dup2(fd, STDOUT_FILENO);
+	close(fd);
+	order_66(node->left_node, env);
+	restore_fd(node, original_fd);
+    close(original_fd);
 	return (0);
 }
-int	is_builtin(char **cmd)
+
+int exec_cmd(t_ast *node, t_env *env, int is_piped)
 {
-		if (ft_strncmp(cmd[0], "echo", 4) == 0 && ft_strncmp(cmd[1], "-n", 2) == 0)
-		return(1);
-	else if (ft_strncmp(cmd[0], "cd", 2) == 0)
-		return(1);
-	else if (ft_strncmp(cmd[0], "pwd", 3) == 0)
-		return (1);
-	else if (ft_strncmp(cmd[0], "export", 6) == 0)
-		return (1);
-	else if (ft_strncmp(cmd[0], "unset", 5) == 0)
-		return (1);
-	else if (ft_strncmp(cmd[0], "env", 3) == 0)
-		return (1);
-	else if (ft_strncmp(cmd[0], "exit", 4) == 0)
-		return (1);
-	else
-		return (0);
+    if (!node->argv || !node->argv->str)
+        return (0);
+	if (is_builtin(node->argv->str) == 1)
+    {
+        if (is_piped == 0 && is_state_changing(node->argv->str))
+        {
+            identify_builtins(node, env);
+            return (0);
+        }
+        else
+        {
+            identify_builtins(node, env);
+            return (0);
+        }
+    }
+    fork_and_run(node, env);
+    return (0);
 }
 
-void    fork_and_run(char **cmd, char *cmd_path, char **env)
+int is_builtin(char *cmd)
+{
+    if (!cmd)
+        return (0);
+    if (ft_strncmp(cmd, "echo", 5) == 0)
+        return (1);
+    else if (ft_strncmp(cmd, "cd", 3) == 0)
+        return (1);
+    else if (ft_strncmp(cmd, "pwd", 4) == 0)
+        return (1);
+    else if (ft_strncmp(cmd, "export", 7) == 0)
+        return (1);
+    else if (ft_strncmp(cmd, "unset", 6) == 0)
+        return (1);
+    else if (ft_strncmp(cmd, "env", 4) == 0)
+        return (1);
+    else if (ft_strncmp(cmd, "exit", 5) == 0)
+        return (1);
+    else
+	    return (0);
+}
+
+static void err_putstr(char *cmd)
+{
+    ft_putstr_fd("minishell: ", 2);
+    ft_putstr_fd(cmd, 2);
+    ft_putstr_fd(": command not found\n", 2);
+}
+
+void    fork_and_run(t_ast *node, t_env *env)
 {
     pid_t   pid;
     int     status;
+    char    **cmd;
+    char    *cmd_path;
+    char    **env_arr;
 
+	//	TODO: signal handling
+    if (!node->argv || !node->argv->str)
+        return ;
+    env_arr = convert_list_to_arr(env);
+    if (!env_arr)
+        return ;  
+
+    cmd = list_to_argv(node->argv);
+    if (!cmd)
+    {
+        free_ast_argv(env_arr);
+        return ;
+    }
+    cmd_path = NULL;
+    if (cmd[0] && !is_builtin(cmd[0]) && !is_absolute_relative(cmd[0]))
+        cmd_path = get_path(cmd[0], env_arr);
     pid = fork();
     if (pid == -1)
     {
         perror("minishell: fork");
+        free_ast_argv(env_arr);
+        free_ast_argv(cmd);
+        if (cmd_path) free(cmd_path);
         return ;
     }
     if (pid == 0)
     {
-        if (is_builtin(cmd)) 
+        if (cmd[0] && is_builtin(cmd[0]) == 1) 
         {
-            identify_builtins(cmd, cmd_path, env);
+            identify_builtins(node, env);
             exit(0);
         }
-        if (is_absolute_relative(cmd[0]) == 1)
-            run_non_standard(cmd, env);
+        if (cmd[0] && is_absolute_relative(cmd[0]) == 1)
+            run_non_standard(cmd, env_arr);
         if (cmd_path)
-            execve(cmd_path, cmd, env);
-        ft_putstr_fd("minishell: ", 2);
-        ft_putstr_fd(cmd[0], 2);
-        ft_putstr_fd(": command not found\n", 2);
-		exit(127);
+            execve(cmd_path, cmd, env_arr);
+            
+        if (cmd[0])
+            err_putstr(cmd[0]);
+        exit(127);
     }
     else
     {
@@ -170,6 +242,9 @@ void    fork_and_run(char **cmd, char *cmd_path, char **env)
         if (WIFEXITED(status))
             g_exit_status = WEXITSTATUS(status);
         free_ast_argv(cmd);
+        free_ast_argv(env_arr);
+        if (cmd_path)
+            free(cmd_path);
     }
 }
 
@@ -241,6 +316,32 @@ char *join_env_str(char *key, char *val)
     return (res);
 }
 
+// char    **convert_list_to_arr(t_env *env)
+// {
+//     char    **env_arr;
+//     int     env_size;
+//     int     i;
+
+//     env_size = list_size(env);
+//     env_arr = malloc(sizeof(char *) * (env_size + 1));
+//     if (!env_arr)
+//         return (NULL);
+//     i = 0;
+//     while (env)
+//     {
+//         env_arr[i] = join_env_str(env->key, env->val);
+//         if (env_arr[i] == NULL) 
+//         {
+//             free_ast_argv(env_arr);
+//             return (NULL);
+//         }
+//         i++;
+//         env = env->next;
+//     }
+//     env_arr[i] = NULL;
+//     return (env_arr);
+// }
+
 char    **convert_list_to_arr(t_env *env)
 {
     char    **env_arr;
@@ -248,30 +349,32 @@ char    **convert_list_to_arr(t_env *env)
     int     i;
 
     env_size = list_size(env);
-    env_arr = malloc(sizeof(char *) * (env_size + 1));
+    env_arr = ft_calloc(env_size + 1, sizeof(char *));
     if (!env_arr)
         return (NULL);
     i = 0;
     while (env)
     {
-        env_arr[i] = join_env_str(env->key, env->val);
-        if (env_arr[i] == NULL) 
+        if (env->val) 
         {
-            free_ast_argv(env_arr);
-            return (NULL);
+            env_arr[i] = join_env_str(env->key, env->val);
+            if (env_arr[i] == NULL) 
+            {
+                free_ast_argv(env_arr);
+                return (NULL);
+            }
+            i++;
         }
-        i++;
         env = env->next;
     }
-    env_arr[i] = NULL;
     return (env_arr);
 }
-
 
 int	list_size(t_env *env)
 {
 	int	i;
 
+	i = 0;
 	while (env)
 	{
 		i++;

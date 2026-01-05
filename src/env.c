@@ -6,7 +6,7 @@
 /*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/27 22:00:53 by kwrzosek          #+#    #+#             */
-/*   Updated: 2025/12/28 14:18:43 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2026/01/05 15:09:44 by kwrzosek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ t_env   *init_env(char **env)
 
     head = NULL;
     tail = NULL;
-    i = 0;
-    while (env[i])
+    i = -1;
+    while (env[++i])
     {
         new_node = create_node(env, i);
         if (!new_node)
@@ -37,35 +37,134 @@ t_env   *init_env(char **env)
             tail->next = new_node;
             tail = new_node;
         }
-        i++;
     }
     return (head);
 }
 
-
-t_env	*create_node(char **env, int i)
+t_env   *create_node(char **env, int i)
 {
-	t_env	*node;
-	int		j;
-	char	*curr_env;
+    t_env   *node;
+    int     j;
+    char    *curr_env;
 
-	node = malloc(sizeof(t_env));
-	curr_env = malloc(sizeof(char) * (ft_strlen(env[i]) + 1));
-	if (!node || !curr_env)
-		return (NULL);
-	j = 0;
-	ft_strlcpy(curr_env, env[i], ft_strlen(env[i]) + 1);
-	while (curr_env[j] && curr_env[j] != '=')
-		j++;
-	node->key = malloc(sizeof(char) * (j + 1));
-	if (!node->key)
+    node = malloc(sizeof(t_env));
+    if (!node)
+        return (NULL);
+    curr_env = ft_strdup(env[i]);
+    if (!curr_env)
+    {
+        free(node);
+        return (NULL);
+    }
+    j = 0;
+    while (curr_env[j] && curr_env[j] != '=')
+        j++;
+    node->key = ft_substr(curr_env, 0, j);
+    if (!node->key)
+    {
+        free(curr_env);
+        free(node);
+        return (NULL);
+    }
+    if (curr_env[j] == '=')
+        node->val = ft_strdup(&curr_env[j + 1]); 
+    else
+        node->val = NULL;
+    node->next = NULL;
+    free(curr_env);
+    return (node);
+}
+void	free_env(t_env *env)
+{
+	t_env *tmp;
+
+	while (env != NULL)
 	{
-		free(node);
-		free(curr_env);
-		return(NULL);
+		tmp = env;
+		env = env->next;
+		free(tmp);
 	}
-	ft_strlcpy(node->key, curr_env, j + 1);
-	node->val = ft_getenv(node->key, env);
-	free(curr_env);
-	return(node);
+}
+
+/*
+** Removes a node from the environment list by key.
+** Usage: delete_node(&env, "VAR_NAME");
+*/
+void delete_node(t_env **head, char *key)
+{
+    t_env   *current;
+    t_env   *prev;
+
+    if (!head || !*head)
+        return ;
+    current = *head;
+    if (ft_strncmp(current->key, key, ft_strlen(key) + 1) == 0)
+    {
+        *head = current->next;
+        free(current->key);
+        if (current->val)
+            free(current->val);
+        free(current);
+        return ;
+    }
+    while (current && ft_strncmp(current->key, key, ft_strlen(key) + 1) != 0)
+    {
+        prev = current;
+        current = current->next;
+    }
+    if (!current)
+        return ;
+    prev->next = current->next;
+    free(current->key);
+    if (current->val)
+        free(current->val);
+    free(current);
+}
+
+static t_env *new_env_node(char *key, char *val)
+{
+    t_env *node;
+
+    node = malloc(sizeof(t_env));
+    if (!node)
+        return (NULL);
+    node->key = ft_strdup(key);
+    if (val)
+        node->val = ft_strdup(val);
+    else
+        node->val = NULL;
+    node->next = NULL;
+    return (node);
+}
+
+void add_or_update_env(t_env **head, char *key, char *val)
+{
+    t_env *current;
+    t_env *new_node;
+
+    if (!*head)
+    {
+        *head = new_env_node(key, val);
+        return ;
+    }
+    current = *head;
+    while (current)
+    {
+        if (ft_strncmp(current->key, key, ft_strlen(key) + 1) == 0)
+        {
+            if (val) 
+            {
+                if (current->val)
+                    free(current->val);
+                current->val = ft_strdup(val);
+            }
+            return ;
+        }
+        if (current->next == NULL)
+            break ;
+        current = current->next;
+    }
+    new_node = new_env_node(key, val);
+    if (new_node)
+        current->next = new_node;
 }
