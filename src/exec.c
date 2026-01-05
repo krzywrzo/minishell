@@ -6,7 +6,7 @@
 /*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/27 17:45:25 by kwrzosek          #+#    #+#             */
-/*   Updated: 2026/01/05 15:32:14 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2026/01/05 16:06:40 by kwrzosek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,6 +186,28 @@ static void err_putstr(char *cmd)
     ft_putstr_fd(cmd, 2);
     ft_putstr_fd(": command not found\n", 2);
 }
+void child_signals(void)
+{
+    signal(SIGINT, SIG_DFL);
+    signal(SIGQUIT, SIG_DFL);
+}
+
+void handle_sigint(int sig)
+{
+    (void)sig;
+    
+    ft_putchar_fd('\n', 1);
+    rl_on_new_line();
+    rl_replace_line("", 0);
+    rl_redisplay();
+    g_exit_status = 1;
+}
+
+void setup_signals(void)
+{
+    signal(SIGINT, handle_sigint);
+    signal(SIGQUIT, SIG_IGN);
+}
 
 void    fork_and_run(t_ast *node, t_env *env)
 {
@@ -211,6 +233,7 @@ void    fork_and_run(t_ast *node, t_env *env)
     cmd_path = NULL;
     if (cmd[0] && !is_builtin(cmd[0]) && !is_absolute_relative(cmd[0]))
         cmd_path = get_path(cmd[0], env_arr);
+	signal(SIGINT, SIG_IGN);
     pid = fork();
     if (pid == -1)
     {
@@ -222,6 +245,7 @@ void    fork_and_run(t_ast *node, t_env *env)
     }
     if (pid == 0)
     {
+		child_signals();
         if (cmd[0] && is_builtin(cmd[0]) == 1) 
         {
             identify_builtins(node, env);
@@ -241,6 +265,15 @@ void    fork_and_run(t_ast *node, t_env *env)
         waitpid(pid, &status, 0);
         if (WIFEXITED(status))
             g_exit_status = WEXITSTATUS(status);
+		else if (WIFSIGNALED(status))
+        {
+            g_exit_status = 128 + WTERMSIG(status);
+            if (WTERMSIG(status) == SIGQUIT)
+                ft_putstr_fd("Quit: 3\n", 1);
+            else if (WTERMSIG(status) == SIGINT)
+                ft_putstr_fd("\n", 1);
+        }
+		signal(SIGINT, handle_sigint);
         free_ast_argv(cmd);
         free_ast_argv(env_arr);
         if (cmd_path)
@@ -315,32 +348,6 @@ char *join_env_str(char *key, char *val)
     free(tmp);
     return (res);
 }
-
-// char    **convert_list_to_arr(t_env *env)
-// {
-//     char    **env_arr;
-//     int     env_size;
-//     int     i;
-
-//     env_size = list_size(env);
-//     env_arr = malloc(sizeof(char *) * (env_size + 1));
-//     if (!env_arr)
-//         return (NULL);
-//     i = 0;
-//     while (env)
-//     {
-//         env_arr[i] = join_env_str(env->key, env->val);
-//         if (env_arr[i] == NULL) 
-//         {
-//             free_ast_argv(env_arr);
-//             return (NULL);
-//         }
-//         i++;
-//         env = env->next;
-//     }
-//     env_arr[i] = NULL;
-//     return (env_arr);
-// }
 
 char    **convert_list_to_arr(t_env *env)
 {

@@ -6,7 +6,7 @@
 /*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 16:29:27 by kwrzosek          #+#    #+#             */
-/*   Updated: 2026/01/05 15:10:01 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2026/01/05 16:07:15 by kwrzosek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <fcntl.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <signal.h>
 # include "../../libft/libft.h"
 # include "parsing.h"
 
