@@ -6,7 +6,7 @@
 /*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 16:29:27 by kwrzosek          #+#    #+#             */
-/*   Updated: 2026/01/05 16:07:15 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2026/01/06 02:12:24 by kwrzosek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <unistd.h>
 # include <stdio.h>
 # include <fcntl.h>
+# include <sys/wait.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <signal.h>
@@ -30,7 +31,7 @@ typedef struct s_env
 	
 }	t_env;
 
-int	g_exit_status;
+extern int	g_exit_status;
 
 // exec.c
 int	order_66(t_ast *root, t_env *env);
