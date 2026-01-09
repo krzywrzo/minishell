@@ -3,59 +3,59 @@
 /*                                                        :::      ::::::::   */
 /*   cleaners.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/10 15:26:12 by kwrzosek          #+#    #+#             */
-/*   Updated: 2026/01/05 15:01:05 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2026/01/09 13:30:12 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/shell.h"
 
-void    free_token(t_token *token)
+void	free_token(t_token *token)
 {
-    t_token *next_node;
+	t_token	*next_node;
 
-    while (token != NULL)
-    {
-        next_node = token->next;
-        if (token->val != NULL)
-        {
-            free(token->val);
-            token->val = NULL;
-        }
-        free(token);
-        token = next_node; 
+	while (token != NULL)
+	{
+		next_node = token->next;
+		if (token->val != NULL)
+		{
+			free(token->val);
+			token->val = NULL;
+		}
+		free(token);
+		token = next_node;
 	}
 }
 
-void free_ast_argv(char **argv)
+void	free_ast_argv(char **argv)
 {
 	int	i;
 
-    if (argv == NULL)
-        return;
+	if (argv == NULL)
+		return ;
 	while (argv[i] != NULL)
 	{
 		free(argv[i]);
 		i++;
 	}
-    free(argv);
+	free(argv);
 }
 
 void	free_argv(t_strlist *argv)
 {
+	t_strlist	*tmp;
+
 	if (argv != NULL)
 	{
-		t_strlist *tmp;
-
-   		while (argv != NULL)
-    	{
-       		tmp = argv;
+		while (argv != NULL)
+		{
+			tmp = argv;
 			free(argv->str);
-       		argv = argv->next;
-       		free(tmp);
-    	}
+			argv = argv->next;
+			free(tmp);
+		}
 	}
 }
 
@@ -84,15 +84,4 @@ void	free_strlist(t_strlist *list)
 		free(list);
 		list = tmp;
 	}
-}
-
- t_ast *free_all_on_error(t_ast *root, t_ast *current, t_strlist *argv)
-{
-    if (root)
-        free_ast(root);
-    if (current)
-        free_ast(current);
-    if (argv)
-        free_argv(argv);
-    return (NULL);
 }

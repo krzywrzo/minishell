@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   printers.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 12:04:33 by kwrzosek          #+#    #+#             */
-/*   Updated: 2025/12/24 01:24:41 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2026/01/09 13:40:12 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,32 +40,32 @@ void	print_token(t_token *token)
 	}
 }
 
-void    print_ast(t_ast *node, int depth)
+void	print_ast(t_ast *node, int depth)
 {
-    if (!node)
-        return ;
-    t_strlist *current_arg = node->argv;
-    int i;
-    
-    i = 0;
-    while (i++ < depth)
-        printf("  ");
-    
-    if (node->node_type == NODE_CMD)
-    {
-        printf("CMD: ");
-        while (current_arg != NULL)
-        {
-            printf(" \"%s\"", current_arg->str); 
-            current_arg = current_arg->next; 
-        }
-        printf("\n");
-    }
-    else if (node->node_type == NODE_PIPE)
-        printf("PIPE\n");
-    else if (node->node_type == NODE_REDIR)
+	t_strlist	*current_arg;
+	int			i;
+	char		*redir;
+
+	if (!node)
+		return ;
+	current_arg = node->argv;
+	i = 0;
+	while (i++ < depth)
+		printf("  ");
+	if (node->node_type == NODE_CMD)
 	{
-		char *redir;
+		printf("CMD: ");
+		while (current_arg != NULL)
+		{
+			printf(" \"%s\"", current_arg->str);
+			current_arg = current_arg->next;
+		}
+		printf("\n");
+	}
+	else if (node->node_type == NODE_PIPE)
+		printf("PIPE\n");
+	else if (node->node_type == NODE_REDIR)
+	{
 		if (node->redir_type == 0)
 			redir = "REDIR_OUT";
 		else if (node->redir_type == 1)
@@ -76,8 +76,8 @@ void    print_ast(t_ast *node, int depth)
 			redir = "REDIR_HEREDOC";
 		printf("%s %s\n", redir, node->file);
 	}
-    print_ast(node->left_node, depth + 1);
-    print_ast(node->right_node, depth + 1);
+	print_ast(node->left_node, depth + 1);
+	print_ast(node->right_node, depth + 1);
 }
 
 // void	print_argv(char *argv)

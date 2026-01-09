@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 17:50:55 by kwrzosek          #+#    #+#             */
-/*   Updated: 2025/12/24 01:25:05 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2026/01/09 13:25:30 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	emit_token(t_token **list, char *input, int i)
 {
 	t_token	*new_token;
 	t_token	*last;
-	
+
 	if (!list)
 		return ;
 	new_token = malloc(sizeof(t_token));
@@ -36,10 +36,10 @@ void	emit_token(t_token **list, char *input, int i)
 
 t_token	*read_input(char *input)
 {
-	t_token		*head;
-	t_token		**list;
-	t_token		*last;
-	int			i;
+	t_token	*head;
+	t_token	**list;
+	t_token	*last;
+	int		i;
 
 	head = NULL;
 	list = &head;

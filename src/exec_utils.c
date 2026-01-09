@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/27 19:54:58 by kwrzosek          #+#    #+#             */
-/*   Updated: 2025/12/27 20:01:18 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2026/01/09 13:32:05 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ char	*get_path(char *cmd, char **env)
 
 char	*ft_getenv(char *name, char **env)
 {
-	char	*sub;
+	char *sub;
 
 	int i, j;
 	i = 0;
