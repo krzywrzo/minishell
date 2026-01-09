@@ -6,7 +6,7 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 13:38:10 by sjesione          #+#    #+#             */
-/*   Updated: 2026/01/09 14:58:56 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/09 18:37:05 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,10 @@ static t_ast	*handle_redir(t_strlist **argv, t_token **token)
 	t_ast	*cmd;
 	t_ast	*node;
 
-	cmd = build_cmd_from_list(*argv);
+	if (*argv)
+		cmd = build_cmd_from_list(*argv);
+	else
+		cmd = create_cmd_node(NULL);
 	if (!cmd)
 		return (NULL);
 	*argv = NULL;
@@ -41,11 +44,6 @@ static t_ast	*handle_redir(t_strlist **argv, t_token **token)
 	*token = (*token)->next;
 	if (*token)
 		*token = (*token)->next;
-	else
-	{
-		free_ast(node);
-		return (NULL);
-	}
 	return (node);
 }
 

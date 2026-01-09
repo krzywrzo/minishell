@@ -6,7 +6,7 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 22:26:55 by kwrzosek          #+#    #+#             */
-/*   Updated: 2026/01/09 16:55:52 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/09 18:37:05 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static int	handle_input(char *input, t_env *envl)
 	free_token(head);
 	if (!tree)
 		return (0);
-	if (order_66(tree, envl) != 0)
+	if (order_66(tree, envl, 0) != 0)
 	{
 		free_ast(tree);
 		return (1);
@@ -54,6 +54,8 @@ static int	handle_input(char *input, t_env *envl)
 // Dodaj potrzebny nagłówek dla rl_clear_history, jeśli go nie ma w shell.h
 // #include <readline/history.h> 
 
+void	setup_signals(void);
+
 int	main(int argc, char **argv, char **env)
 {
 	char	*input;
@@ -61,12 +63,16 @@ int	main(int argc, char **argv, char **env)
 
 	(void)argc;
 	(void)argv;
+	setup_signals();
 	envl = init_env(env);
 	while (1)
 	{
 		input = readline("minishell$ ");
 		if (!input)
+		{
+			ft_putstr_fd("exit\n", 1);
 			break ;
+		}
 		if (handle_input(input, envl))
 		{
 			free_env(envl);

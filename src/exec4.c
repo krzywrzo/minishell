@@ -6,7 +6,7 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 15:17:11 by sjesione          #+#    #+#             */
-/*   Updated: 2026/01/09 17:16:53 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/09 18:37:05 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,20 @@ int	exec_cmd(t_ast *node, t_env *env, int is_piped)
 	char	*path;
 	char	*expanded_cmd;
 	int		i;
+	char	buffer[4096];
+	ssize_t	bytes;
 
 	if (!node->argv || !node->argv->str)
-		return (0);
+	if (!node->argv || !node->argv->str)
+	{
+		if (!is_piped)
+			return (0);
+		while ((bytes = read(STDIN_FILENO, buffer, sizeof(buffer))) > 0)
+		{
+			write(STDOUT_FILENO, buffer, bytes);
+		}
+		exit(0);
+	}
 	if (is_builtin(node->argv->str) == 1)
 	{
 		if (is_piped == 0 && is_state_changing(node->argv->str))

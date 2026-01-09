@@ -31,6 +31,7 @@ SRC_FILES = builtins.c \
             exec4.c \
             exec5.c \
             exec6.c \
+            expansion.c \
             lexer_utils.c \
             lexer_utils2.c \
             lexer.c \

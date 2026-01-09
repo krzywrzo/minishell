@@ -6,7 +6,7 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 15:22:36 by sjesione          #+#    #+#             */
-/*   Updated: 2026/01/09 15:22:37 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/09 18:37:05 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ typedef struct s_env
 extern int	g_exit_status;
 
 // exec.c
-int		order_66(t_ast *root, t_env *env);
+int		order_66(t_ast *root, t_env *env, int is_piped);
 char	**convert_list_to_arr(t_env *env);
 int		list_size(t_env *env);
 char	*join_env_str(char *key, char *val);
@@ -45,7 +45,7 @@ int		is_absolute_relative(char *cmd);
 void	run_non_standard(char **argv, char **envp);
 int		what_fd(t_ast *node);
 int		exec_cmd(t_ast *node, t_env *env, int is_piped);
-int		exec_redir(t_ast *node, t_env *env);
+int		exec_redir(t_ast *node, t_env *env, int is_piped);
 int		exec_pipe(t_ast *node, t_env *env);
 
 // exec_utils.c
@@ -53,6 +53,10 @@ char	*get_path(char *cmd, char **env);
 char	*ft_getenv(char *name, char **env);
 void	err_putstr(char *cmd);
 void	child_signals(void);
+void	setup_signals(void);
+
+// expansion.c
+char	*expand_variables(char *str, t_env *env);
 
 // builtins.c
 int		identify_builtins(t_ast *node, t_env *env);
