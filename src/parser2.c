@@ -6,9 +6,11 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 13:38:10 by sjesione          #+#    #+#             */
-/*   Updated: 2026/01/09 13:38:43 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/09 14:58:56 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "../inc/shell.h"
 
 t_ast	*find_base_command(t_ast *node)
 {

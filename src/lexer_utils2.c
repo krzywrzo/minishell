@@ -6,9 +6,11 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 13:35:03 by sjesione          #+#    #+#             */
-/*   Updated: 2026/01/09 13:35:26 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/09 14:58:30 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "../inc/shell.h"
 
 void	handle_squotes(char *input, t_token *token)
 {

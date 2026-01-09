@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 16:29:27 by kwrzosek          #+#    #+#             */
-/*   Updated: 2026/01/06 02:12:24 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2026/01/09 14:55:43 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <signal.h>
-# include "../../libft/libft.h"
+# include "../libft/libft.h"
 # include "parsing.h"
 
 typedef struct s_env

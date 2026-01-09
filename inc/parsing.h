@@ -99,7 +99,6 @@ char	**list_to_argv(t_strlist *list);
 t_ast *create_cmd_node(t_strlist *list);
 
 // parser.c
-static t_ast	*wrap_redir(t_ast *cmd, t_token *token);
 void	list_append(t_strlist **list, char *s);
 t_ast	*parse_token(t_token *tokens);
 
