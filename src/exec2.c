@@ -6,7 +6,7 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 13:32:39 by sjesione          #+#    #+#             */
-/*   Updated: 2026/01/09 13:42:07 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/09 17:16:12 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	is_state_changing(char *cmd)
 	return (0);
 }
 
-int	handle_error(void) //	TODO: handle execve error
+int	handle_error(void)
 {
 	return (-1);
 }

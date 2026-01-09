@@ -6,7 +6,7 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 22:26:55 by kwrzosek          #+#    #+#             */
-/*   Updated: 2026/01/09 15:27:23 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/09 16:55:52 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,9 @@ static int	handle_input(char *input, t_env *envl)
 	if (!head)
 		return (0);
 	tree = parse_token(head);
-	if (!tree)
-		free_ast(tree);
 	free_token(head);
+	if (!tree)
+		return (0);
 	if (order_66(tree, envl) != 0)
 	{
 		free_ast(tree);
@@ -48,6 +48,11 @@ static int	handle_input(char *input, t_env *envl)
 	free_ast(tree);
 	return (0);
 }
+
+/* src/main.c */
+
+// Dodaj potrzebny nagłówek dla rl_clear_history, jeśli go nie ma w shell.h
+// #include <readline/history.h> 
 
 int	main(int argc, char **argv, char **env)
 {
@@ -63,7 +68,13 @@ int	main(int argc, char **argv, char **env)
 		if (!input)
 			break ;
 		if (handle_input(input, envl))
+		{
+			free_env(envl);
+			rl_clear_history();
 			return (-1);
+		}
 	}
+	free_env(envl);
+	rl_clear_history();
 	return (0);
 }

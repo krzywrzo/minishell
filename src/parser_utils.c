@@ -6,7 +6,7 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 15:21:51 by sjesione          #+#    #+#             */
-/*   Updated: 2026/01/09 15:22:21 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/09 16:55:52 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ t_ast	*create_pipe_node(t_ast *left, t_ast *right)
 		return (NULL);
 	node->node_type = NODE_PIPE;
 	node->argv = NULL;
+	node->val = NULL;
 	node->file = NULL;
 	node->redir_type = -1;
 	node->left_node = left;
@@ -50,6 +51,7 @@ t_ast	*create_redir_node(t_ast *cmd, t_redir mode, char *file)
 		return (NULL);
 	node->node_type = NODE_REDIR;
 	node->argv = NULL;
+	node->val = NULL;
 	node->file = file;
 	node->redir_type = mode;
 	node->left_node = cmd;

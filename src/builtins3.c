@@ -6,7 +6,7 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 14:21:24 by sjesione          #+#    #+#             */
-/*   Updated: 2026/01/09 14:23:18 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/09 17:16:29 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ int	cd_builtin(char **argv, t_env *env)
 	char	*path;
 	char	old_cwd[1024];
 
-	getcwd(old_cwd, sizeof(old_cwd));
+	if (getcwd(old_cwd, sizeof(old_cwd)) == NULL)
+		old_cwd[0] = '\0';
 	if (!argv[1])
 	{
 		path = get_env_val(env, "HOME");
@@ -79,6 +80,78 @@ static int	process_export_arg(char *arg, t_env *env)
 	return (0);
 }
 
+static int	env_list_len(t_env *env)
+{
+	int	len;
+
+	len = 0;
+	while (env)
+	{
+		len++;
+		env = env->next;
+	}
+	return (len);
+}
+
+static void	sort_and_print_export(t_env *env)
+{
+	t_env	**sorted;
+	int		len;
+	int		i;
+	int		j;
+	t_env	*tmp;
+
+	len = env_list_len(env);
+	if (len == 0)
+		return ;
+	sorted = malloc(sizeof(t_env *) * len);
+	if (!sorted)
+		return ;
+	i = 0;
+	while (env)
+	{
+		sorted[i++] = env;
+		env = env->next;
+	}
+	i = 0;
+	while (i < len)
+	{
+		j = i + 1;
+		while (j < len)
+		{
+			if (ft_strncmp(sorted[i]->key, sorted[j]->key,
+					ft_strlen(sorted[i]->key) + 1) > 0)
+			{
+				tmp = sorted[i];
+				sorted[i] = sorted[j];
+				sorted[j] = tmp;
+			}
+			j++;
+		}
+		i++;
+	}
+	i = 0;
+	while (i < len)
+	{
+		ft_putstr_fd("declare -x ", 1);
+		ft_putstr_fd(sorted[i]->key, 1);
+		if (sorted[i]->val)
+		{
+			ft_putstr_fd("=\"", 1);
+			ft_putstr_fd(sorted[i]->val, 1);
+			ft_putstr_fd("\"", 1);
+		}
+		ft_putchar_fd('\n', 1);
+		i++;
+	}
+	free(sorted);
+}
+
+static void	print_export_list(t_env *env)
+{
+	sort_and_print_export(env);
+}
+
 int	export_builtin(char **argv, t_env *env)
 {
 	int	i;
@@ -87,7 +160,10 @@ int	export_builtin(char **argv, t_env *env)
 	i = 1;
 	status = 0;
 	if (!argv[1])
-		return (env_builtin(env));
+	{
+		print_export_list(env);
+		return (0);
+	}
 	while (argv[i])
 	{
 		if (process_export_arg(argv[i], env))

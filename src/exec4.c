@@ -6,7 +6,7 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 15:17:11 by sjesione          #+#    #+#             */
-/*   Updated: 2026/01/09 15:17:11 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/09 17:16:53 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,12 @@
 
 int	exec_cmd(t_ast *node, t_env *env, int is_piped)
 {
+	char	**env_arr;
+	char	**cmd;
+	char	*path;
+	char	*expanded_cmd;
+	int		i;
+
 	if (!node->argv || !node->argv->str)
 		return (0);
 	if (is_builtin(node->argv->str) == 1)
@@ -29,7 +35,47 @@ int	exec_cmd(t_ast *node, t_env *env, int is_piped)
 			return (0);
 		}
 	}
-	fork_and_run(node, env);
+	else
+	{
+		if (is_piped)
+		{
+			child_signals();
+			env_arr = convert_list_to_arr(env);
+			cmd = list_to_argv(node->argv);
+			if (!env_arr || !cmd)
+			{
+				if (env_arr)
+					free_ast_argv(env_arr);
+				if (cmd)
+					free(cmd);
+				return (0);
+			}
+			path = NULL;
+			i = 0;
+			while (cmd[i])
+			{
+				expanded_cmd = expand_variables(cmd[i], env);
+				free(cmd[i]);
+				cmd[i] = expanded_cmd;
+				i++;
+			}
+			if (cmd[0] && !is_absolute_relative(cmd[0]))
+				path = get_path(cmd[0], env_arr);
+			if (cmd[0] && is_absolute_relative(cmd[0]))
+				run_non_standard(cmd, env_arr);
+			if (path)
+				execve(path, cmd, env_arr);
+			if (cmd[0])
+				err_putstr(cmd[0]);
+			if (path)
+				free(path);
+			free(cmd);
+			free_ast_argv(env_arr);
+			exit(127);
+		}
+		else
+			fork_and_run(node, env);
+	}
 	return (0);
 }
 

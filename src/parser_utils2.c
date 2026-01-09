@@ -6,7 +6,7 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 13:36:41 by sjesione          #+#    #+#             */
-/*   Updated: 2026/01/09 14:48:35 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/09 16:55:52 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,22 +42,18 @@ t_ast	*create_cmd_node(t_strlist *list)
 char	**list_to_argv(t_strlist *list)
 {
 	char		**argv;
-	t_strlist	*next;
+	t_strlist	*tmp;
 	int			i;
 
 	argv = malloc(sizeof(char *) * (get_list_len(list) + 1));
 	if (!argv)
-	{
-		free_argv(list);
 		return (NULL);
-	}
 	i = 0;
-	while (list)
+	tmp = list;
+	while (tmp)
 	{
-		argv[i++] = list->str;
-		next = list->next;
-		free(list);
-		list = next;
+		argv[i++] = tmp->str;
+		tmp = tmp->next;
 	}
 	argv[i] = NULL;
 	return (argv);

@@ -6,7 +6,7 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 14:42:49 by sjesione          #+#    #+#             */
-/*   Updated: 2026/01/09 14:45:47 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/09 15:54:08 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ int	what_fd(t_ast *node)
 {
 	int	fd;
 
+	fd = -1;
 	if (node->redir_type == REDIR_IN)
 		fd = open(node->file, O_RDONLY);
 	else if (node->redir_type == REDIR_OUT)

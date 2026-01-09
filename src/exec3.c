@@ -6,7 +6,7 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 13:33:27 by sjesione          #+#    #+#             */
-/*   Updated: 2026/01/09 14:45:19 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/09 17:14:07 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,19 @@ void	setup_signals(void)
 static void	child_process(t_ast *node, t_env *env, char **cmd, char **env_arr)
 {
 	char	*path;
+	char	*expanded_cmd;
+	int		i;
 
 	child_signals();
 	path = NULL;
+	i = 0;
+	while (cmd[i])
+	{
+		expanded_cmd = expand_variables(cmd[i], env);
+		free(cmd[i]);
+		cmd[i] = expanded_cmd;
+		i++;
+	}
 	if (cmd[0] && !is_builtin(cmd[0]) && !is_absolute_relative(cmd[0]))
 		path = get_path(cmd[0], env_arr);
 	if (cmd[0] && is_builtin(cmd[0]))
@@ -47,6 +57,11 @@ static void	child_process(t_ast *node, t_env *env, char **cmd, char **env_arr)
 		execve(path, cmd, env_arr);
 	if (cmd[0])
 		err_putstr(cmd[0]);
+	if (path)
+		free(path);
+	free(cmd);
+	free_ast_argv(env_arr);
+	free_env(env);
 	exit(127);
 }
 
@@ -82,7 +97,7 @@ void	fork_and_run(t_ast *node, t_env *env)
 	{
 		free_ast_argv(env_arr);
 		if (cmd)
-			free_ast_argv(cmd);
+			free(cmd);
 		return ;
 	}
 	signal(SIGINT, SIG_IGN);
@@ -93,6 +108,6 @@ void	fork_and_run(t_ast *node, t_env *env)
 		child_process(node, env, cmd, env_arr);
 	else
 		handle_status(pid);
-	free_ast_argv(cmd);
+	free(cmd);
 	free_ast_argv(env_arr);
 }

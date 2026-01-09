@@ -6,7 +6,7 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 17:50:55 by kwrzosek          #+#    #+#             */
-/*   Updated: 2026/01/09 14:46:33 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/09 15:59:53 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ void	emit_token(t_token **list, char *input, int i)
 	new_token = malloc(sizeof(t_token));
 	if (!new_token)
 		return ;
+	new_token->next = NULL;
 	pick_handler(input, i, new_token);
 	if (*list == NULL)
 	{

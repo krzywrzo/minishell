@@ -6,7 +6,7 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/27 17:45:25 by kwrzosek          #+#    #+#             */
-/*   Updated: 2026/01/09 14:43:29 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/09 17:16:04 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,14 @@ int	exec_pipe(t_ast *node, t_env *env)
 		child_left(node, env, fd);
 	pid_r = fork();
 	if (pid_r == -1)
-		return (perror("fork"), close(fd[0]), close(fd[1]), 1);
+	{
+		perror("fork");
+		close(fd[0]);
+		close(fd[1]);
+		kill(pid_l, SIGTERM);
+		waitpid(pid_l, NULL, 0);
+		return (1);
+	}
 	if (pid_r == 0)
 		child_right(node, env, fd);
 	return (parent_wait(pid_l, pid_r, fd));

@@ -6,7 +6,7 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 15:16:12 by sjesione          #+#    #+#             */
-/*   Updated: 2026/01/09 15:16:14 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/09 17:14:07 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,18 @@ int	identify_builtins(t_ast *node, t_env *env)
 {
 	char	**cmd;
 	int		exit_status;
+	int		i;
+	char	*expanded;
 
 	cmd = list_to_argv(node->argv);
 	exit_status = 0;
+	i = 0;
+	while (cmd[i])
+	{
+		expanded = expand_variables(cmd[i], env);
+		cmd[i] = expanded;
+		i++;
+	}
 	if (ft_strncmp(cmd[0], "echo", 5) == 0)
 		exit_status = echo_builtin(cmd);
 	else if (ft_strncmp(cmd[0], "cd", 3) == 0)
@@ -34,7 +43,13 @@ int	identify_builtins(t_ast *node, t_env *env)
 		exit_status = env_builtin(env);
 	else if (ft_strncmp(cmd[0], "exit", 5) == 0)
 		exit_status = exit_builtin(cmd, env);
-	free_ast_argv(cmd);
+	i = 0;
+	while (cmd[i])
+	{
+		free(cmd[i]);
+		i++;
+	}
+	free(cmd);
 	return (exit_status);
 }
 
