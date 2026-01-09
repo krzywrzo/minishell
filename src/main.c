@@ -6,11 +6,13 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 22:26:55 by kwrzosek          #+#    #+#             */
-/*   Updated: 2026/01/09 14:52:16 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/09 15:12:47 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/shell.h"
+
+int	g_exit_status = 0;
 
 void	print_env(t_env *envl)
 {

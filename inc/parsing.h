@@ -1,6 +1,17 @@
-#ifndef PARSING_H
-#define PARSING_H
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing.h                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/09 15:22:52 by sjesione          #+#    #+#             */
+/*   Updated: 2026/01/09 15:22:56 by sjesione         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
+#ifndef PARSING_H
+# define PARSING_H
 
 /*	STRUCTS	*/
 struct	t_token;
@@ -46,22 +57,18 @@ typedef struct s_token
 	t_token_type	type;
 	char			*val;
 	int				length;
-	struct s_token		*next;
+	struct s_token	*next;
 }	t_token;
 
 typedef struct s_ast
 {
-	t_node_type	node_type;
-	t_redir		redir_type;
-
+	t_node_type			node_type;
+	t_redir				redir_type;
 	struct s_strlist	*argv;
-	// char		**argv;
-
-
-	char		*val;
-	char		*file;		// file name for redir
-	struct s_ast	*left_node;
-	struct s_ast	*right_node;	
+	char				*val;
+	char				*file;
+	struct s_ast		*left_node;
+	struct s_ast		*right_node;
 }	t_ast;
 
 typedef struct s_strlist
@@ -69,7 +76,6 @@ typedef struct s_strlist
 	char				*str;
 	struct s_strlist	*next;
 }	t_strlist;
-
 
 /* FUNCTIONS */
 
@@ -81,7 +87,7 @@ void	handle_red_in(char *input, t_token *token);
 void	handle_pipe(t_token *token);
 void	handle_squotes(char *input, t_token *token);
 void	handle_dquotes(char *input, t_token *token);
-int 	is_separator(char c);
+int		is_separator(char c);
 
 // lexer.c
 void	emit_token(t_token **list, char *input, int i);
@@ -95,24 +101,24 @@ t_ast	*create_redir_node(t_ast *cmd, t_redir mode, char *file);
 void	free_strlist(t_strlist *list);
 t_ast	*build_cmd_from_list(t_strlist *list);
 char	**list_to_argv(t_strlist *list);
-
-t_ast *create_cmd_node(t_strlist *list);
+t_ast	*create_cmd_node(t_strlist *list);
+int		get_list_len(t_strlist *list);
 
 // parser.c
 void	list_append(t_strlist **list, char *s);
 t_ast	*parse_token(t_token *tokens);
-
-t_ast *merge_ast_nodes(t_ast *root_node, t_ast *args_node);
-t_ast *find_base_command(t_ast *node);
-void append_all_strings(t_strlist **destination_list, t_strlist *source_list);
-t_strlist *find_list_tail(t_strlist *list);
+t_ast	*merge_ast_nodes(t_ast *root_node, t_ast *args_node);
+t_ast	*find_base_command(t_ast *node);
+void	append_all_strings(t_strlist **dest, t_strlist *src);
+t_strlist	*find_list_tail(t_strlist *list);
+t_ast	*wrap_redir(t_ast *cmd, t_token *token);
 
 // cleaners.c
-void free_ast_argv(char **argv);
+void	free_ast_argv(char **argv);
 void	free_token(t_token *token);
 void	free_argv(t_strlist *argv);
 void	free_ast(t_ast *root);
-t_ast *free_all_on_error(t_ast *root, t_ast *current, t_strlist *argv);
+t_ast	*free_all_on_error(t_ast *root, t_ast *current, t_strlist *argv);
 
 // printers.c
 void	print_token(t_token *token);

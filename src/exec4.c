@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/09 13:34:18 by sjesione          #+#    #+#             */
-/*   Updated: 2026/01/09 13:41:59 by sjesione         ###   ########.fr       */
+/*   Created: 2026/01/09 15:17:11 by sjesione          #+#    #+#             */
+/*   Updated: 2026/01/09 15:17:11 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int	is_builtin(char *cmd)
 		return (0);
 }
 
-static void	err_putstr(char *cmd)
+void	err_putstr(char *cmd)
 {
 	ft_putstr_fd("minishell: ", 2);
 	ft_putstr_fd(cmd, 2);

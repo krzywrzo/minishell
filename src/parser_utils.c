@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/13 16:25:44 by kwrzosek          #+#    #+#             */
-/*   Updated: 2026/01/09 14:48:11 by sjesione         ###   ########.fr       */
+/*   Created: 2026/01/09 15:21:51 by sjesione          #+#    #+#             */
+/*   Updated: 2026/01/09 15:22:21 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ t_ast	*build_cmd_from_list(t_strlist *list)
 	return (node);
 }
 
-static int	get_list_len(t_strlist *list)
+int	get_list_len(t_strlist *list)
 {
 	int	len;
 

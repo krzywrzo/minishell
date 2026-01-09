@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/09 13:28:37 by sjesione          #+#    #+#             */
-/*   Updated: 2026/01/09 13:41:12 by sjesione         ###   ########.fr       */
+/*   Created: 2026/01/09 15:16:48 by sjesione          #+#    #+#             */
+/*   Updated: 2026/01/09 15:16:48 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ int	exit_builtin(char **argv, t_env *env)
 	exit(255);
 }
 
-static int	is_valid_key(char *key)
+int	is_valid_key(char *key)
 {
 	int	i;
 
@@ -87,7 +87,7 @@ static int	is_valid_key(char *key)
 	return (1);
 }
 
-static char	*get_env_val(t_env *env, char *key)
+char	*get_env_val(t_env *env, char *key)
 {
 	while (env)
 	{

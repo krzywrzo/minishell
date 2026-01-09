@@ -5,14 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/07 12:28:49 by kwrzosek          #+#    #+#             */
-/*   Updated: 2026/01/09 13:38:32 by sjesione         ###   ########.fr       */
+/*   Created: 2026/01/09 15:17:43 by sjesione          #+#    #+#             */
+/*   Updated: 2026/01/09 15:17:44 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/shell.h"
 
-static t_ast	*wrap_redir(t_ast *cmd, t_token *token)
+t_ast	*wrap_redir(t_ast *cmd, t_token *token)
 {
 	t_redir	redir_mode;
 	char	*file;

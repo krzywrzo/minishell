@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/27 18:00:48 by kwrzosek          #+#    #+#             */
-/*   Updated: 2026/01/09 14:22:24 by sjesione         ###   ########.fr       */
+/*   Created: 2026/01/09 15:16:12 by sjesione          #+#    #+#             */
+/*   Updated: 2026/01/09 15:16:14 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ int	env_builtin(t_env *env)
 	return (0);
 }
 
-static void	update_wd_env(t_env *env, char *key, char *new_val)
+void	update_wd_env(t_env *env, char *key, char *new_val)
 {
 	while (env)
 	{
