@@ -6,7 +6,7 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 12:04:33 by kwrzosek          #+#    #+#             */
-/*   Updated: 2026/01/09 13:40:12 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/09 14:50:25 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,53 +40,43 @@ void	print_token(t_token *token)
 	}
 }
 
+static void	print_cmd_args(t_strlist *arg)
+{
+	printf("CMD: ");
+	while (arg)
+	{
+		printf(" \"%s\"", arg->str);
+		arg = arg->next;
+	}
+	printf("\n");
+}
+
+static char	*get_redir_label(int type)
+{
+	if (type == 0)
+		return ("REDIR_OUT");
+	if (type == 1)
+		return ("REDIR_IN");
+	if (type == 2)
+		return ("REDIR_APPEND");
+	return ("REDIR_HEREDOC");
+}
+
 void	print_ast(t_ast *node, int depth)
 {
-	t_strlist	*current_arg;
-	int			i;
-	char		*redir;
+	int	i;
 
 	if (!node)
 		return ;
-	current_arg = node->argv;
-	i = 0;
-	while (i++ < depth)
+	i = -1;
+	while (++i < depth)
 		printf("  ");
 	if (node->node_type == NODE_CMD)
-	{
-		printf("CMD: ");
-		while (current_arg != NULL)
-		{
-			printf(" \"%s\"", current_arg->str);
-			current_arg = current_arg->next;
-		}
-		printf("\n");
-	}
+		print_cmd_args(node->argv);
 	else if (node->node_type == NODE_PIPE)
 		printf("PIPE\n");
 	else if (node->node_type == NODE_REDIR)
-	{
-		if (node->redir_type == 0)
-			redir = "REDIR_OUT";
-		else if (node->redir_type == 1)
-			redir = "REDIR_IN";
-		else if (node->redir_type == 2)
-			redir = "REDIR_APPEND";
-		else
-			redir = "REDIR_HEREDOC";
-		printf("%s %s\n", redir, node->file);
-	}
+		printf("%s %s\n", get_redir_label(node->redir_type), node->file);
 	print_ast(node->left_node, depth + 1);
 	print_ast(node->right_node, depth + 1);
 }
-
-// void	print_argv(char *argv)
-// {
-// 	int i = 0;
-// 	while (argv[i])
-// 	{
-// 		printf("%c", argv[i]);
-// 		i++;
-// 	}
-// 	printf("\n");
-// }

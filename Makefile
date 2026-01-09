@@ -17,7 +17,29 @@ OBJ_DIR		=	obj
 INC_DIR		=	inc
 
 
-SRC_FILES = lexer_utils.c lexer.c main.c parser.c parser_utils.c cleaners.c printers.c exec.c exec_utils.c env.c builtins.c
+SRC_FILES = builtins.c \
+            builtins2.c \
+            builtins3.c \
+            cleaners.c \
+            cleaners2.c \
+            env.c \
+            env2.c \
+            exec_utils.c \
+            exec.c \
+            exec2.c \
+            exec3.c \
+            exec4.c \
+            exec5.c \
+            exec6.c \
+            lexer_utils.c \
+            lexer_utils2.c \
+            lexer.c \
+            main.c \
+            parser_utils.c \
+            parser_utils2.c \
+            parser.c \
+            parser2.c \
+            printers.c
 SRC			=	$(addprefix $(SRC_DIR)/, $(SRC_FILES))
 OBJ			=	$(addprefix $(OBJ_DIR)/, $(SRC_FILES:.c=.o))
 

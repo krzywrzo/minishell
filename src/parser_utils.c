@@ -6,7 +6,7 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 16:25:44 by kwrzosek          #+#    #+#             */
-/*   Updated: 2026/01/09 13:36:54 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/09 14:48:11 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,38 +69,15 @@ t_ast	*build_cmd_from_list(t_strlist *list)
 	return (node);
 }
 
-char	**list_to_argv(t_strlist *list)
+static int	get_list_len(t_strlist *list)
 {
-	t_strlist	*curr;
-	t_strlist	*next_node;
-	char		**argv;
-	int			count;
-	int			i;
+	int	len;
 
-	count = 0;
-	curr = list;
-	while (curr)
+	len = 0;
+	while (list)
 	{
-		count++;
-		curr = curr->next;
+		len++;
+		list = list->next;
 	}
-	argv = malloc(sizeof(char *) * (count + 1));
-	if (!argv)
-	{
-		// free_strlist(curr);
-		free_argv(list);
-		return (NULL);
-	}
-	curr = list;
-	i = 0;
-	while (curr)
-	{
-		argv[i++] = curr->str;
-		next_node = curr->next;
-		free(curr);
-		curr = next_node;
-	}
-	// free_strlist(curr);
-	argv[i] = NULL;
-	return (argv);
+	return (len);
 }

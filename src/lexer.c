@@ -6,7 +6,7 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 17:50:55 by kwrzosek          #+#    #+#             */
-/*   Updated: 2026/01/09 13:25:30 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/09 14:46:33 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,6 @@ t_token	*read_input(char *input)
 		while (input[i] == ' ')
 			i++;
 	}
-	// print_token(*list);
 	return (head);
 }
 

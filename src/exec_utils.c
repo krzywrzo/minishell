@@ -6,57 +6,62 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/27 19:54:58 by kwrzosek          #+#    #+#             */
-/*   Updated: 2026/01/09 13:32:05 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/09 14:39:36 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/shell.h"
 
-char	*get_path(char *cmd, char **env)
+static char	*find_exec_in_paths(char **paths, char *cmd_name)
 {
 	int		i;
-	char	**all_path;
-	char	**s_cmd;
-	char	*path_part;
-	char	*exec;
-	char	*path_env;
+	char	*tmp;
+	char	*full_path;
 
-	path_env = ft_getenv("PATH", env);
-	if (!path_env)
+	i = -1;
+	while (paths[++i])
+	{
+		tmp = ft_strjoin(paths[i], "/");
+		full_path = ft_strjoin(tmp, cmd_name);
+		free(tmp);
+		if (access(full_path, F_OK | X_OK) == 0)
+			return (full_path);
+		free(full_path);
+	}
+	return (NULL);
+}
+
+char	*get_path(char *cmd, char **env)
+{
+	char	**paths;
+	char	**s_cmd;
+	char	*found_path;
+	char	*env_val;
+
+	env_val = ft_getenv("PATH", env);
+	if (!env_val)
 		return (NULL);
-	all_path = ft_split(path_env, ':');
-	if (!all_path)
+	paths = ft_split(env_val, ':');
+	if (!paths)
 		return (NULL);
 	s_cmd = ft_split(cmd, ' ');
 	if (!s_cmd)
 	{
-		free_ast_argv(all_path);
+		free_ast_argv(paths);
 		return (NULL);
 	}
-	i = -1;
-	while (all_path[++i])
-	{
-		path_part = ft_strjoin(all_path[i], "/");
-		exec = ft_strjoin(path_part, s_cmd[0]);
-		free(path_part);
-		if (access(exec, F_OK | X_OK) == 0)
-		{
-			free_ast_argv(all_path);
-			free_ast_argv(s_cmd);
-			return (exec);
-		}
-		free(exec);
-	}
-	free_ast_argv(all_path);
+	found_path = find_exec_in_paths(paths, s_cmd[0]);
+	free_ast_argv(paths);
 	free_ast_argv(s_cmd);
-	return (NULL);
+	return (found_path);
 }
 
 char	*ft_getenv(char *name, char **env)
 {
-	char *sub;
+	char	*sub;
+	int		i;
+	int		j;
 
-	int i, j;
 	i = 0;
 	while (env[i])
 	{

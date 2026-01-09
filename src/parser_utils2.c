@@ -6,9 +6,11 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 13:36:41 by sjesione          #+#    #+#             */
-/*   Updated: 2026/01/09 13:37:39 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/09 14:48:35 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "../inc/shell.h"
 
 t_strlist	*convert_char_array_to_list(char **array)
 {
@@ -33,7 +35,30 @@ t_ast	*create_cmd_node(t_strlist *list)
 	if (!node)
 		return (NULL);
 	node->node_type = NODE_CMD;
-	node->argv = list; // ✅ Correct: Assigning t_strlist* to t_strlist*
-	// node->argv is now the owner of the list memory.
+	node->argv = list;
 	return (node);
+}
+
+char	**list_to_argv(t_strlist *list)
+{
+	char		**argv;
+	t_strlist	*next;
+	int			i;
+
+	argv = malloc(sizeof(char *) * (get_list_len(list) + 1));
+	if (!argv)
+	{
+		free_argv(list);
+		return (NULL);
+	}
+	i = 0;
+	while (list)
+	{
+		argv[i++] = list->str;
+		next = list->next;
+		free(list);
+		list = next;
+	}
+	argv[i] = NULL;
+	return (argv);
 }
