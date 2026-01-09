@@ -6,7 +6,7 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 22:26:55 by kwrzosek          #+#    #+#             */
-/*   Updated: 2026/01/09 15:12:47 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/09 15:27:23 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ static int	handle_input(char *input, t_env *envl)
 		free_ast(tree);
 		return (1);
 	}
+	free_ast(tree);
 	return (0);
 }
 

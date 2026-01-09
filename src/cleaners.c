@@ -6,7 +6,7 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/10 15:26:12 by kwrzosek          #+#    #+#             */
-/*   Updated: 2026/01/09 13:30:12 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/09 15:26:55 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ void	free_ast_argv(char **argv)
 {
 	int	i;
 
+	i = 0;
 	if (argv == NULL)
 		return ;
 	while (argv[i] != NULL)
