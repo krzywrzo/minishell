@@ -45,14 +45,18 @@ static int	is_numeric(char *str)
 	return (1);
 }
 
-int	exit_builtin(char **argv, t_env *env)
+int	exit_builtin(char **argv, t_env *env, int is_piped)
 {
 	int	code;
 
-	ft_putstr_fd("exit\n", 1);
+	if (!is_piped)
+		ft_putstr_fd("exit\n", 1);
 	if (!argv[1])
 	{
-		free_env(env);
+		if (!is_piped)
+		{
+			free_env(env);
+		}
 		exit(0);
 	}
 	if (is_numeric(argv[1]))
@@ -63,11 +67,15 @@ int	exit_builtin(char **argv, t_env *env)
 			return (1);
 		}
 		code = ft_atoi(argv[1]);
-		free_env(env);
+		if (!is_piped)
+		{
+			free_env(env);
+		}
 		exit(code % 256);
 	}
 	ft_putstr_fd("minishell: exit: numeric argument required\n", 2);
-	free_env(env);
+	if (!is_piped)
+		free_env(env);
 	exit(255);
 }
 

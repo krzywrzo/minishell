@@ -59,14 +59,14 @@ void	setup_signals(void);
 char	*expand_variables(char *str, t_env *env);
 
 // builtins.c
-int		identify_builtins(t_ast *node, t_env *env);
+int		identify_builtins(t_ast *node, t_env *env, int is_piped);
 int		echo_builtin(char **argv);
 int		cd_builtin(char **argv, t_env *env);
 int		pwd_builtin(void);
 int		export_builtin(char **argv, t_env *env);
 int		unset_builtin(char **argv, t_env *env);
 int		env_builtin(t_env *env);
-int		exit_builtin(char **argv, t_env *env);
+int		exit_builtin(char **argv, t_env *env, int is_piped);
 void	update_wd_env(t_env *env, char *key, char *new_val);
 int		is_valid_key(char *key);
 char	*get_env_val(t_env *env, char *key);

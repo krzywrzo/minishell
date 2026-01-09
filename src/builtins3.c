@@ -70,7 +70,9 @@ static int	process_export_arg(char *arg, t_env *env)
 	}
 	if (!is_valid_key(key))
 	{
-		ft_putstr_fd("minishell: export: not a valid identifier\n", 2);
+		ft_putstr_fd("minishell: export: `", 2);
+		ft_putstr_fd(arg, 2);
+		ft_putstr_fd("': not a valid identifier\n", 2);
 		free(key);
 		if (val)
 			free(val);

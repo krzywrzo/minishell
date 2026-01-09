@@ -23,13 +23,15 @@ t_ast	*find_base_command(t_ast *node)
 	return (NULL);
 }
 
-static t_ast	*handle_redir(t_strlist **argv, t_token **token)
+static t_ast	*handle_redir(t_ast *base_node, t_strlist **argv, t_token **token)
 {
 	t_ast	*cmd;
 	t_ast	*node;
 
 	if (*argv)
 		cmd = build_cmd_from_list(*argv);
+	else if (base_node)
+		cmd = base_node;
 	else
 		cmd = create_cmd_node(NULL);
 	if (!cmd)
@@ -112,7 +114,7 @@ t_ast	*parse_token(t_token *token)
 			list_append(&argv, ft_strdup(token->val));
 		else if (token->type >= TOKEN_RED_IN && token->type <= TOKEN_HEREDOC)
 		{
-			curr = handle_redir(&argv, &token);
+			curr = handle_redir(curr, &argv, &token);
 			if (!curr)
 				return (free_all_on_error(root, NULL, NULL));
 			continue ;

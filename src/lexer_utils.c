@@ -33,8 +33,26 @@ void	pick_handler(char *input, int i, t_token *token)
 	else
 	{
 		len = 0;
+		// Handle words that may contain $(...) command substitutions
 		while (input[i + len] && !is_separator(input[i + len]))
-			len++;
+		{
+			// If we encounter $(...), skip over the entire substitution
+			if (input[i + len] == '$' && input[i + len + 1] == '(')
+			{
+				len += 2;  // Skip $(
+				int paren_depth = 1;
+				while (input[i + len] && paren_depth > 0)
+				{
+					if (input[i + len] == '(')
+						paren_depth++;
+					else if (input[i + len] == ')')
+						paren_depth--;
+					len++;
+				}
+			}
+			else
+				len++;
+		}
 		token->type = TOKEN_WORD;
 		token->val = ft_substr(input, i, len);
 		token->length = len;

@@ -43,7 +43,7 @@ static int	handle_input(char *input, t_env *envl)
 	if (order_66(tree, envl, 0) != 0)
 	{
 		free_ast(tree);
-		return (1);
+		return (0);
 	}
 	free_ast(tree);
 	return (0);

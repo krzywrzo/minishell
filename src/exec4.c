@@ -35,16 +35,8 @@ int	exec_cmd(t_ast *node, t_env *env, int is_piped)
 	}
 	if (is_builtin(node->argv->str) == 1)
 	{
-		if (is_piped == 0 && is_state_changing(node->argv->str))
-		{
-			identify_builtins(node, env);
-			return (0);
-		}
-		else
-		{
-			identify_builtins(node, env);
-			return (0);
-		}
+		identify_builtins(node, env, is_piped);
+		return (0);
 	}
 	else
 	{

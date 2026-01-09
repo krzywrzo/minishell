@@ -48,7 +48,7 @@ static void	child_process(t_ast *node, t_env *env, char **cmd, char **env_arr)
 		path = get_path(cmd[0], env_arr);
 	if (cmd[0] && is_builtin(cmd[0]))
 	{
-		identify_builtins(node, env);
+		identify_builtins(node, env, 0);
 		exit(0);
 	}
 	if (cmd[0] && is_absolute_relative(cmd[0]))

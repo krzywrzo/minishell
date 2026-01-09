@@ -13,7 +13,7 @@
 #include "../inc/shell.h"
 
 // int	identify_builtins(char **cmd, char *cmd_path, char **env_arr)
-int	identify_builtins(t_ast *node, t_env *env)
+int	identify_builtins(t_ast *node, t_env *env, int is_piped)
 {
 	char	**cmd;
 	int		exit_status;
@@ -42,7 +42,7 @@ int	identify_builtins(t_ast *node, t_env *env)
 	else if (ft_strncmp(cmd[0], "env", 4) == 0)
 		exit_status = env_builtin(env);
 	else if (ft_strncmp(cmd[0], "exit", 5) == 0)
-		exit_status = exit_builtin(cmd, env);
+		exit_status = exit_builtin(cmd, env, is_piped);
 	i = 0;
 	while (cmd[i])
 	{
