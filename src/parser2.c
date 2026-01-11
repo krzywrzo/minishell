@@ -6,7 +6,7 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 13:38:10 by sjesione          #+#    #+#             */
-/*   Updated: 2026/01/09 18:37:05 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/11 17:41:32 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@ t_ast	*find_base_command(t_ast *node)
 	return (NULL);
 }
 
-static t_ast	*handle_redir(t_ast *base_node, t_strlist **argv, t_token **token)
+static t_ast	*handle_redir(t_ast *base_node, t_strlist **argv,
+		t_token **token)
 {
 	t_ast	*cmd;
 	t_ast	*node;

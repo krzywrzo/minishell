@@ -6,7 +6,7 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 15:22:52 by sjesione          #+#    #+#             */
-/*   Updated: 2026/01/09 15:22:56 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/11 17:41:32 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define PARSING_H
 
 /*	STRUCTS	*/
-struct	t_token;
+struct	s_token;
 
 typedef enum e_lex_state
 {
@@ -80,49 +80,49 @@ typedef struct s_strlist
 /* FUNCTIONS */
 
 // lexer_utils.c
-void	pick_handler(char *input, int i, t_token *token);
-void	handle_general(char *input, t_token *token);
-void	handle_red_out(char *input, t_token *token);
-void	handle_red_in(char *input, t_token *token);
-void	handle_pipe(t_token *token);
-void	handle_squotes(char *input, t_token *token);
-void	handle_dquotes(char *input, t_token *token);
-int		is_separator(char c);
+void		pick_handler(char *input, int i, t_token *token);
+void		handle_general(char *input, t_token *token);
+void		handle_red_out(char *input, t_token *token);
+void		handle_red_in(char *input, t_token *token);
+void		handle_pipe(t_token *token);
+void		handle_squotes(char *input, t_token *token);
+void		handle_dquotes(char *input, t_token *token);
+int			is_separator(char c);
 
 // lexer.c
-void	emit_token(t_token **list, char *input, int i);
-t_token	*read_input(char *input);
-t_token	*end_of_list(t_token **token);
+void		emit_token(t_token **list, char *input, int i);
+t_token		*read_input(char *input);
+t_token		*end_of_list(t_token **token);
 
 // parser_utils.c
-t_redir	token_to_mode(t_token *token);
-t_ast	*create_pipe_node(t_ast *left, t_ast *right);
-t_ast	*create_redir_node(t_ast *cmd, t_redir mode, char *file);
-void	free_strlist(t_strlist *list);
-t_ast	*build_cmd_from_list(t_strlist *list);
-char	**list_to_argv(t_strlist *list);
-t_ast	*create_cmd_node(t_strlist *list);
-int		get_list_len(t_strlist *list);
+t_redir		token_to_mode(t_token *token);
+t_ast		*create_pipe_node(t_ast *left, t_ast *right);
+t_ast		*create_redir_node(t_ast *cmd, t_redir mode, char *file);
+void		free_strlist(t_strlist *list);
+t_ast		*build_cmd_from_list(t_strlist *list);
+char		**list_to_argv(t_strlist *list);
+t_ast		*create_cmd_node(t_strlist *list);
+int			get_list_len(t_strlist *list);
 
 // parser.c
-void	list_append(t_strlist **list, char *s);
-t_ast	*parse_token(t_token *tokens);
-t_ast	*merge_ast_nodes(t_ast *root_node, t_ast *args_node);
-t_ast	*find_base_command(t_ast *node);
-void	append_all_strings(t_strlist **dest, t_strlist *src);
+void		list_append(t_strlist **list, char *s);
+t_ast		*parse_token(t_token *tokens);
+t_ast		*merge_ast_nodes(t_ast *root_node, t_ast *args_node);
+t_ast		*find_base_command(t_ast *node);
+void		append_all_strings(t_strlist **dest, t_strlist *src);
 t_strlist	*find_list_tail(t_strlist *list);
-t_ast	*wrap_redir(t_ast *cmd, t_token *token);
+t_ast		*wrap_redir(t_ast *cmd, t_token *token);
 
 // cleaners.c
-void	free_ast_argv(char **argv);
-void	free_token(t_token *token);
-void	free_argv(t_strlist *argv);
-void	free_ast(t_ast *root);
-t_ast	*free_all_on_error(t_ast *root, t_ast *current, t_strlist *argv);
+void		free_ast_argv(char **argv);
+void		free_token(t_token *token);
+void		free_argv(t_strlist *argv);
+void		free_ast(t_ast *root);
+t_ast		*free_all_on_error(t_ast *root, t_ast *current, t_strlist *argv);
 
 // printers.c
-void	print_token(t_token *token);
-void	print_ast(t_ast *node, int depth);
-void	print_argv(char *argv);
+void		print_token(t_token *token);
+void		print_ast(t_ast *node, int depth);
+void		print_argv(char *argv);
 
 #endif

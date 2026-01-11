@@ -6,44 +6,34 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 13:33:27 by sjesione          #+#    #+#             */
-/*   Updated: 2026/01/09 17:14:07 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/11 17:41:32 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/shell.h"
 
-void	handle_sigint(int sig)
+static void	expand_cmd_args(char **cmd, t_env *env)
 {
-	(void)sig;
-	ft_putchar_fd('\n', 1);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
-	g_exit_status = 1;
-}
+	char	*expanded_cmd;
+	int		i;
 
-void	setup_signals(void)
-{
-	signal(SIGINT, handle_sigint);
-	signal(SIGQUIT, SIG_IGN);
+	i = 0;
+	while (cmd[i])
+	{
+		expanded_cmd = process_string_with_quotes(cmd[i], env);
+		free(cmd[i]);
+		cmd[i] = expanded_cmd;
+		i++;
+	}
 }
 
 static void	child_process(t_ast *node, t_env *env, char **cmd, char **env_arr)
 {
 	char	*path;
-	char	*expanded_cmd;
-	int		i;
 
 	child_signals();
+	expand_cmd_args(cmd, env);
 	path = NULL;
-	i = 0;
-	while (cmd[i])
-	{
-		expanded_cmd = expand_variables(cmd[i], env);
-		free(cmd[i]);
-		cmd[i] = expanded_cmd;
-		i++;
-	}
 	if (cmd[0] && !is_builtin(cmd[0]) && !is_absolute_relative(cmd[0]))
 		path = get_path(cmd[0], env_arr);
 	if (cmd[0] && is_builtin(cmd[0]))
@@ -80,7 +70,7 @@ static void	handle_status(pid_t pid)
 		else if (WTERMSIG(status) == SIGINT)
 			ft_putstr_fd("\n", 1);
 	}
-	signal(SIGINT, handle_sigint);
+	signal(SIGINT, SIG_DFL);
 }
 
 void	fork_and_run(t_ast *node, t_env *env)

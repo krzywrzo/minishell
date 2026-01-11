@@ -6,57 +6,52 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 19:18:54 by kwrzosek          #+#    #+#             */
-/*   Updated: 2026/01/09 13:35:13 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/11 17:41:32 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/shell.h"
 
-void	pick_handler(char *input, int i, t_token *token)
+static int	skip_cmd_subst(char *input, int len)
+{
+	int	paren_depth;
+
+	len += 2;
+	paren_depth = 1;
+	while (input[len] && paren_depth > 0)
+	{
+		if (input[len] == '(')
+			paren_depth++;
+		else if (input[len] == ')')
+			paren_depth--;
+		len++;
+	}
+	return (len);
+}
+
+static int	get_word_len(char *input, int i)
 {
 	int	len;
 
-	if (input[i] == ' ' || input[i] == '\t')
+	len = 0;
+	while (input[i + len] && !is_separator(input[i + len]))
 	{
-		handle_general(input + i, token);
+		if (input[i + len] == '$' && input[i + len + 1] == '(')
+			len = skip_cmd_subst(input + i, len) - i;
+		else
+			len++;
 	}
-	else if (input[i] == '<')
-		handle_red_in(input + i, token);
-	else if (input[i] == '>')
-		handle_red_out(input + i, token);
-	else if (input[i] == '|')
-		handle_pipe(token);
-	else if (input[i] == '\'')
-		handle_squotes(input + i, token);
-	else if (input[i] == '"')
-		handle_dquotes(input + i, token);
-	else
-	{
-		len = 0;
-		// Handle words that may contain $(...) command substitutions
-		while (input[i + len] && !is_separator(input[i + len]))
-		{
-			// If we encounter $(...), skip over the entire substitution
-			if (input[i + len] == '$' && input[i + len + 1] == '(')
-			{
-				len += 2;  // Skip $(
-				int paren_depth = 1;
-				while (input[i + len] && paren_depth > 0)
-				{
-					if (input[i + len] == '(')
-						paren_depth++;
-					else if (input[i + len] == ')')
-						paren_depth--;
-					len++;
-				}
-			}
-			else
-				len++;
-		}
-		token->type = TOKEN_WORD;
-		token->val = ft_substr(input, i, len);
-		token->length = len;
-	}
+	return (len);
+}
+
+static void	handle_word(char *input, int i, t_token *token)
+{
+	int	len;
+
+	len = get_word_len(input, i);
+	token->type = TOKEN_WORD;
+	token->val = ft_substr(input, i, len);
+	token->length = len;
 }
 
 void	handle_general(char *input, t_token *token)
@@ -78,41 +73,20 @@ void	handle_general(char *input, t_token *token)
 		token->length = 0;
 }
 
-void	handle_red_out(char *input, t_token *token)
+void	pick_handler(char *input, int i, t_token *token)
 {
-	if (input[1] == '>')
-	{
-		token->type = TOKEN_APPEND;
-		token->val = ft_strdup(">>");
-		token->length = 2;
-	}
+	if (input[i] == ' ' || input[i] == '\t')
+		handle_general(input + i, token);
+	else if (input[i] == '<')
+		handle_red_in(input + i, token);
+	else if (input[i] == '>')
+		handle_red_out(input + i, token);
+	else if (input[i] == '|')
+		handle_pipe(token);
+	else if (input[i] == '\'')
+		handle_squotes(input + i, token);
+	else if (input[i] == '"')
+		handle_dquotes(input + i, token);
 	else
-	{
-		token->type = TOKEN_RED_OUT;
-		token->val = ft_strdup(">");
-		token->length = 1;
-	}
-}
-
-void	handle_red_in(char *input, t_token *token)
-{
-	if (input[1] == '<')
-	{
-		token->type = TOKEN_HEREDOC;
-		token->val = ft_strdup("<<");
-		token->length = 2;
-	}
-	else
-	{
-		token->type = TOKEN_RED_IN;
-		token->val = ft_strdup("<");
-		token->length = 1;
-	}
-}
-
-void	handle_pipe(t_token *token)
-{
-	token->type = TOKEN_PIPE;
-	token->val = ft_strdup("|");
-	token->length = 1;
+		handle_word(input, i, token);
 }

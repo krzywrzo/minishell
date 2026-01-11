@@ -6,7 +6,7 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/27 19:54:58 by kwrzosek          #+#    #+#             */
-/*   Updated: 2026/01/09 17:17:06 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/11 17:41:32 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,10 @@ char	*get_path(char *cmd, char **env)
 
 char	*ft_getenv(char *name, char **env)
 {
-	char *sub;
-	int i;
-	int j;
-	int len;
+	char	*sub;
+	int		i;
+	int		j;
+	int		len;
 
 	i = 0;
 	len = ft_strlen(name);
@@ -69,7 +69,6 @@ char	*ft_getenv(char *name, char **env)
 		sub = ft_substr(env[i], 0, j);
 		if (!sub)
 			return (NULL);
-
 		if (j == len && ft_strncmp(sub, name, len) == 0)
 		{
 			free(sub);
@@ -79,4 +78,31 @@ char	*ft_getenv(char *name, char **env)
 		i++;
 	}
 	return (NULL);
+}
+
+int	is_builtin(char *cmd)
+{
+	if (ft_strncmp(cmd, "echo", 5) == 0)
+		return (1);
+	else if (ft_strncmp(cmd, "cd", 3) == 0)
+		return (1);
+	else if (ft_strncmp(cmd, "pwd", 4) == 0)
+		return (1);
+	else if (ft_strncmp(cmd, "export", 7) == 0)
+		return (1);
+	else if (ft_strncmp(cmd, "unset", 6) == 0)
+		return (1);
+	else if (ft_strncmp(cmd, "env", 4) == 0)
+		return (1);
+	else if (ft_strncmp(cmd, "exit", 5) == 0)
+		return (1);
+	else
+		return (0);
+}
+
+void	err_putstr(char *cmd)
+{
+	ft_putstr_fd("minishell: ", 2);
+	ft_putstr_fd(cmd, 2);
+	ft_putstr_fd(": command not found\n", 2);
 }

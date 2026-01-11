@@ -20,10 +20,14 @@ INC_DIR		=	inc
 SRC_FILES = builtins.c \
             builtins2.c \
             builtins3.c \
+            builtins4.c \
+            builtins5.c \
+            builtins6.c \
             cleaners.c \
             cleaners2.c \
             env.c \
             env2.c \
+            env3.c \
             exec_utils.c \
             exec.c \
             exec2.c \
@@ -31,16 +35,25 @@ SRC_FILES = builtins.c \
             exec4.c \
             exec5.c \
             exec6.c \
+            exec7.c \
+            exec8.c \
+            exec9.c \
+            exec10.c \
+            exec_pipe.c \
             expansion.c \
+            expansion2.c \
             lexer_utils.c \
             lexer_utils2.c \
+            lexer_utils3.c \
             lexer.c \
             main.c \
+            main_utils.c \
             parser_utils.c \
             parser_utils2.c \
             parser.c \
             parser2.c \
-            printers.c
+            printers.c \
+            quotes.c
 SRC			=	$(addprefix $(SRC_DIR)/, $(SRC_FILES))
 OBJ			=	$(addprefix $(OBJ_DIR)/, $(SRC_FILES:.c=.o))
 

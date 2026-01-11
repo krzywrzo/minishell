@@ -6,7 +6,7 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 15:16:48 by sjesione          #+#    #+#             */
-/*   Updated: 2026/01/09 15:16:48 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/11 17:41:32 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	unset_builtin(char **argv, t_env *env)
 	return (0);
 }
 
-static int	is_numeric(char *str)
+int	is_numeric(char *str)
 {
 	int	i;
 
@@ -43,40 +43,6 @@ static int	is_numeric(char *str)
 		i++;
 	}
 	return (1);
-}
-
-int	exit_builtin(char **argv, t_env *env, int is_piped)
-{
-	int	code;
-
-	if (!is_piped)
-		ft_putstr_fd("exit\n", 1);
-	if (!argv[1])
-	{
-		if (!is_piped)
-		{
-			free_env(env);
-		}
-		exit(0);
-	}
-	if (is_numeric(argv[1]))
-	{
-		if (argv[2])
-		{
-			ft_putstr_fd("minishell: exit: too many arguments\n", 2);
-			return (1);
-		}
-		code = ft_atoi(argv[1]);
-		if (!is_piped)
-		{
-			free_env(env);
-		}
-		exit(code % 256);
-	}
-	ft_putstr_fd("minishell: exit: numeric argument required\n", 2);
-	if (!is_piped)
-		free_env(env);
-	exit(255);
 }
 
 int	is_valid_key(char *key)

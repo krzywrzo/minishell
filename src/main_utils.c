@@ -1,42 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec.c                                             :+:      :+:    :+:   */
+/*   main_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/27 17:45:25 by kwrzosek          #+#    #+#             */
+/*   Created: 2026/01/11 12:00:00 by sjesione          #+#    #+#             */
 /*   Updated: 2026/01/11 17:41:32 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/shell.h"
 
-static int	handle_redir_or_cmd(t_ast *root, t_env *env, int is_piped,
-		t_heredoc *hd)
+static char	*read_line_stdin(void)
 {
-	int	ret;
+	char	buffer[4096];
+	size_t	len;
 
-	if (root->node_type == NODE_REDIR)
-		ret = exec_redir(root, env, is_piped, hd);
-	else
-		ret = exec_cmd(root, env, is_piped);
-	if (ret == -1)
-		return (handle_error());
-	if (is_exit_signal(ret))
-		return (ret);
-	return (0);
+	if (fgets(buffer, sizeof(buffer), stdin) == NULL)
+		return (NULL);
+	len = ft_strlen(buffer);
+	if (len > 0 && buffer[len - 1] == '\n')
+		buffer[len - 1] = '\0';
+	return (ft_strdup(buffer));
 }
 
-int	order_66(t_ast *root, t_env *env, int is_piped, t_heredoc *hd)
+char	*get_input(int is_interactive)
 {
-	if (!root)
-		return (0);
-	if (root->node_type == NODE_PIPE)
-	{
-		if (exec_pipe(root, env, hd) == -1)
-			return (handle_error());
-		return (0);
-	}
-	return (handle_redir_or_cmd(root, env, is_piped, hd));
+	if (is_interactive)
+		return (readline("minishell$ "));
+	return (read_line_stdin());
+}
+
+void	child_signals(void)
+{
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 }

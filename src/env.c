@@ -6,7 +6,7 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/27 22:00:53 by kwrzosek          #+#    #+#             */
-/*   Updated: 2026/01/09 14:34:23 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/11 17:41:32 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,10 @@ void	free_env(t_env *env)
 	{
 		tmp = env;
 		env = env->next;
+		if (tmp->key)
+			free(tmp->key);
+		if (tmp->val)
+			free(tmp->val);
 		free(tmp);
 	}
 }

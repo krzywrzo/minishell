@@ -6,54 +6,13 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 15:16:12 by sjesione          #+#    #+#             */
-/*   Updated: 2026/01/09 17:14:07 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/11 17:41:32 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/shell.h"
 
-// int	identify_builtins(char **cmd, char *cmd_path, char **env_arr)
-int	identify_builtins(t_ast *node, t_env *env, int is_piped)
-{
-	char	**cmd;
-	int		exit_status;
-	int		i;
-	char	*expanded;
-
-	cmd = list_to_argv(node->argv);
-	exit_status = 0;
-	i = 0;
-	while (cmd[i])
-	{
-		expanded = expand_variables(cmd[i], env);
-		cmd[i] = expanded;
-		i++;
-	}
-	if (ft_strncmp(cmd[0], "echo", 5) == 0)
-		exit_status = echo_builtin(cmd);
-	else if (ft_strncmp(cmd[0], "cd", 3) == 0)
-		exit_status = cd_builtin(cmd, env);
-	else if (ft_strncmp(cmd[0], "pwd", 4) == 0)
-		exit_status = pwd_builtin();
-	else if (ft_strncmp(cmd[0], "export", 7) == 0)
-		exit_status = export_builtin(cmd, env);
-	else if (ft_strncmp(cmd[0], "unset", 6) == 0)
-		exit_status = unset_builtin(cmd, env);
-	else if (ft_strncmp(cmd[0], "env", 4) == 0)
-		exit_status = env_builtin(env);
-	else if (ft_strncmp(cmd[0], "exit", 5) == 0)
-		exit_status = exit_builtin(cmd, env, is_piped);
-	i = 0;
-	while (cmd[i])
-	{
-		free(cmd[i]);
-		i++;
-	}
-	free(cmd);
-	return (exit_status);
-}
-
-int	echo_builtin(char **argv)
+static int	echo_builtin(char **argv)
 {
 	int	i;
 	int	nl_flag;
@@ -77,7 +36,7 @@ int	echo_builtin(char **argv)
 	return (0);
 }
 
-int	pwd_builtin(void)
+static int	pwd_builtin(void)
 {
 	char	cwd[1024];
 
@@ -91,7 +50,7 @@ int	pwd_builtin(void)
 	return (1);
 }
 
-int	env_builtin(t_env *env)
+static int	env_builtin(t_env *env)
 {
 	while (env)
 	{
@@ -107,17 +66,50 @@ int	env_builtin(t_env *env)
 	return (0);
 }
 
-void	update_wd_env(t_env *env, char *key, char *new_val)
+static void	exec_identified_builtin(char **cmd, t_ast *node, t_env *env,
+		int is_piped)
 {
-	while (env)
+	if (ft_strncmp(cmd[0], "echo", 5) == 0)
+		g_exit_status = echo_builtin(cmd);
+	else if (ft_strncmp(cmd[0], "cd", 3) == 0)
+		g_exit_status = cd_builtin(cmd, env);
+	else if (ft_strncmp(cmd[0], "pwd", 4) == 0)
+		g_exit_status = pwd_builtin();
+	else if (ft_strncmp(cmd[0], "export", 7) == 0)
+		g_exit_status = export_builtin(cmd, env);
+	else if (ft_strncmp(cmd[0], "unset", 6) == 0)
+		g_exit_status = unset_builtin(cmd, env);
+	else if (ft_strncmp(cmd[0], "env", 4) == 0)
+		g_exit_status = env_builtin(env);
+	else if (ft_strncmp(cmd[0], "exit", 5) == 0)
+		g_exit_status = exit_builtin(cmd, env, is_piped);
+	else
+		g_exit_status = 0;
+}
+
+int	identify_builtins(t_ast *node, t_env *env, int is_piped)
+{
+	char	**cmd;
+	int		i;
+	char	*expanded;
+
+	cmd = list_to_argv(node->argv);
+	if (!cmd || !cmd[0])
+		return (0);
+	i = 0;
+	while (cmd[i])
 	{
-		if (ft_strncmp(env->key, key, ft_strlen(key) + 1) == 0)
-		{
-			if (env->val)
-				free(env->val);
-			env->val = ft_strdup(new_val);
-			return ;
-		}
-		env = env->next;
+		expanded = process_string_with_quotes(cmd[i], env);
+		cmd[i] = expanded;
+		i++;
 	}
+	exec_identified_builtin(cmd, node, env, is_piped);
+	i = 0;
+	while (cmd[i])
+	{
+		free(cmd[i]);
+		i++;
+	}
+	free(cmd);
+	return (g_exit_status);
 }

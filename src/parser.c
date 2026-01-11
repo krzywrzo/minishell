@@ -6,7 +6,7 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 15:17:43 by sjesione          #+#    #+#             */
-/*   Updated: 2026/01/09 15:17:44 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/11 17:41:32 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,25 @@ t_ast	*wrap_redir(t_ast *cmd, t_token *token)
 {
 	t_redir	redir_mode;
 	char	*file;
+	char	*processed_file;
 
-	if (!token->next || token->next->type != TOKEN_WORD)
+	if (!token->next || (token->next->type != TOKEN_WORD
+			&& token->next->type != TOKEN_STRING))
 		return (NULL);
 	redir_mode = token_to_mode(token);
-	file = ft_strdup(token->next->val);
-	return (create_redir_node(cmd, redir_mode, file));
+	file = token->next->val;
+	if (token->next->type == TOKEN_STRING)
+	{
+		if (file[0] == '\'' && file[ft_strlen(file) - 1] == '\'')
+			processed_file = ft_substr(file, 1, ft_strlen(file) - 2);
+		else if (file[0] == '"' && file[ft_strlen(file) - 1] == '"')
+			processed_file = ft_substr(file, 1, ft_strlen(file) - 2);
+		else
+			processed_file = ft_strdup(file);
+	}
+	else
+		processed_file = ft_strdup(file);
+	return (create_redir_node(cmd, redir_mode, processed_file));
 }
 
 void	list_append(t_strlist **list, char *s)

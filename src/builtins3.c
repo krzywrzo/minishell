@@ -6,11 +6,26 @@
 /*   By: sjesione < sjesione@student.42warsaw.pl    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 14:21:24 by sjesione          #+#    #+#             */
-/*   Updated: 2026/01/09 17:16:29 by sjesione         ###   ########.fr       */
+/*   Updated: 2026/01/11 17:41:32 by sjesione         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/shell.h"
+
+static void	update_wd_env(t_env *env, char *key, char *new_val)
+{
+	while (env)
+	{
+		if (ft_strncmp(env->key, key, ft_strlen(key) + 1) == 0)
+		{
+			if (env->val)
+				free(env->val);
+			env->val = ft_strdup(new_val);
+			return ;
+		}
+		env = env->next;
+	}
+}
 
 static void	update_workdirs(t_env *env, char *old_cwd)
 {
@@ -23,154 +38,44 @@ static void	update_workdirs(t_env *env, char *old_cwd)
 	}
 }
 
-int	cd_builtin(char **argv, t_env *env)
+static int	cd_to_home(t_env *env)
 {
 	char	*path;
-	char	old_cwd[1024];
 
-	if (getcwd(old_cwd, sizeof(old_cwd)) == NULL)
-		old_cwd[0] = '\0';
-	if (!argv[1])
+	path = get_env_val(env, "HOME");
+	if (!path)
 	{
-		path = get_env_val(env, "HOME");
-		if (!path)
-		{
-			ft_putstr_fd("minishell: cd: HOME not set\n", 2);
-			return (1);
-		}
+		ft_putstr_fd("minishell: cd: HOME not set\n", 2);
+		return (1);
 	}
-	else
-		path = argv[1];
 	if (chdir(path) == -1)
 	{
 		ft_putstr_fd("minishell: cd: ", 2);
 		perror(path);
 		return (1);
 	}
-	update_workdirs(env, old_cwd);
 	return (0);
 }
 
-static int	process_export_arg(char *arg, t_env *env)
+int	cd_builtin(char **argv, t_env *env)
 {
-	char	*key;
-	char	*val;
-	char	*eq;
+	char	old_cwd[1024];
 
-	eq = ft_strchr(arg, '=');
-	if (eq)
-	{
-		key = ft_substr(arg, 0, eq - arg);
-		val = ft_strdup(eq + 1);
-	}
-	else
-	{
-		key = ft_strdup(arg);
-		val = NULL;
-	}
-	if (!is_valid_key(key))
-	{
-		ft_putstr_fd("minishell: export: `", 2);
-		ft_putstr_fd(arg, 2);
-		ft_putstr_fd("': not a valid identifier\n", 2);
-		free(key);
-		if (val)
-			free(val);
-		return (1);
-	}
-	add_or_update_env(&env, key, val);
-	return (0);
-}
-
-static int	env_list_len(t_env *env)
-{
-	int	len;
-
-	len = 0;
-	while (env)
-	{
-		len++;
-		env = env->next;
-	}
-	return (len);
-}
-
-static void	sort_and_print_export(t_env *env)
-{
-	t_env	**sorted;
-	int		len;
-	int		i;
-	int		j;
-	t_env	*tmp;
-
-	len = env_list_len(env);
-	if (len == 0)
-		return ;
-	sorted = malloc(sizeof(t_env *) * len);
-	if (!sorted)
-		return ;
-	i = 0;
-	while (env)
-	{
-		sorted[i++] = env;
-		env = env->next;
-	}
-	i = 0;
-	while (i < len)
-	{
-		j = i + 1;
-		while (j < len)
-		{
-			if (ft_strncmp(sorted[i]->key, sorted[j]->key,
-					ft_strlen(sorted[i]->key) + 1) > 0)
-			{
-				tmp = sorted[i];
-				sorted[i] = sorted[j];
-				sorted[j] = tmp;
-			}
-			j++;
-		}
-		i++;
-	}
-	i = 0;
-	while (i < len)
-	{
-		ft_putstr_fd("declare -x ", 1);
-		ft_putstr_fd(sorted[i]->key, 1);
-		if (sorted[i]->val)
-		{
-			ft_putstr_fd("=\"", 1);
-			ft_putstr_fd(sorted[i]->val, 1);
-			ft_putstr_fd("\"", 1);
-		}
-		ft_putchar_fd('\n', 1);
-		i++;
-	}
-	free(sorted);
-}
-
-static void	print_export_list(t_env *env)
-{
-	sort_and_print_export(env);
-}
-
-int	export_builtin(char **argv, t_env *env)
-{
-	int	i;
-	int	status;
-
-	i = 1;
-	status = 0;
+	if (getcwd(old_cwd, sizeof(old_cwd)) == NULL)
+		old_cwd[0] = '\0';
 	if (!argv[1])
 	{
-		print_export_list(env);
+		if (cd_to_home(env))
+			return (1);
+		update_workdirs(env, old_cwd);
 		return (0);
 	}
-	while (argv[i])
+	if (chdir(argv[1]) == -1)
 	{
-		if (process_export_arg(argv[i], env))
-			status = 1;
-		i++;
+		ft_putstr_fd("minishell: cd: ", 2);
+		perror(argv[1]);
+		return (1);
 	}
-	return (status);
+	update_workdirs(env, old_cwd);
+	return (0);
 }
